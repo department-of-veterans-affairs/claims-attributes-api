@@ -4,7 +4,7 @@ from typing import List
 
 class ClaimInput(BaseModel):
     """
-    Input for claims data
+    User Input for claims data
     """
     claim_text: List[str] = Field(
         None, description="""
@@ -15,6 +15,9 @@ class ClaimInput(BaseModel):
 
 
 class Classification(BaseModel):
+    """
+    Attributes that correspond to the service-connected condition
+    """
     text: str = Field(
         None, description="Text associated with the classified response code")
     code: str = Field(None, description="The classified response code")
@@ -23,14 +26,23 @@ class Classification(BaseModel):
 
 
 class Flash(BaseModel):
+    """
+    Represents attributes appended to a claim that are related to the claimant.
+    """
     text: str = Field(None, description="Flash text")
 
 
 class SpecialIssue(BaseModel):
+    """
+    Represents attributes appended to a claim that are related to the type of claim.
+    """
     text: str = Field(None, description="Special issue text")
 
 
 class Contention(BaseModel):
+    """
+    Represents a single contention from the original list
+    """
     originalText: str = Field(None, description="The originally input text")
     classification: Classification = Field(
         None, description="The classification of this text")
@@ -41,6 +53,9 @@ class Contention(BaseModel):
 
 
 class Prediction(BaseModel):
+    """
+    Represents a per-claim response to a list of claims-text inputs
+    """
     contentions: List[Contention] = Field(
         None, description="""A list of contentions, one per inputted claim text""")
     flashes: List[Flash] = Field(
