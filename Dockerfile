@@ -4,14 +4,26 @@ LABEL maintainer="nathaniel.hillard@va.gov"
 # set path to our python api file
 ENV MODULE_NAME="app.main"
 
-# copy contents of project into docker
-COPY ./ /app
+# Install Poetry
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
+    cd /usr/local/bin && \
+    ln -s /opt/poetry/bin/poetry && \
+    poetry config virtualenvs.create false
 
-# install poetry
-RUN pip install poetry
+COPY pyproject.toml poetry.lock* /app/
 
-# disable virtualenv
-RUN poetry config virtualenvs.create false
+RUN poetry install --no-root --no-dev
 
-# install dependencies
-RUN poetry install
+COPY ./app /app
+
+# # copy contents of project into docker
+# COPY ./ /app
+
+# # install poetry
+# RUN pip install poetry
+
+# # disable virtualenv
+# RUN poetry config virtualenvs.create false
+
+# # install dependencies
+# RUN poetry install

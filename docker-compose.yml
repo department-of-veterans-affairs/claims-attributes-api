@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  attributesFAPI:
+    container_name: AttributesFAPI
+    image: 583093205194.dkr.ecr.us-east-1.amazonaws.com/attributes_fastapi:latest
+    ports:
+      - "8000:8000"
+    command: poetry run server

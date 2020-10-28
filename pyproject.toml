@@ -1,5 +1,8 @@
 [tool.poetry]
 name = "attributes_fastapi"
+packages = [
+    { include = "app" }
+]
 version = "0.1.0"
 description = ""
 authors = ["Nat Hillard <Nathaniel.K.Hillard@omb.eop.gov>"]
