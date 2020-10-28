@@ -27,26 +27,30 @@ def custom_openapi():
     return app.openapi_schema
 
 
-print("Initializing vectorizer...")
 app = FastAPI()
-app.openapi = custom_openapi
-vectorizer = pickle_loader(os.path.join(
-    os.getcwd(), "app/data/vectorizer.pkl"))
+app.openapi = custom_openapi()
+vectorizer = model = classes = None
 
-print("Initializing model...")
-model = pickle_loader(os.path.join(
-    os.getcwd(), "app/data/LRclf.pkl"))
 
-classes = {}
-# Load classification codes and labels
-with open(os.path.join(
-        os.getcwd(), "app/data/classification_text.csv"),
-        mode='r') as infile:
-    dict_reader = csv.DictReader(infile)
-    classes = {i['label'].lower().strip(): i['id'] for i in dict_reader}
-print('codes and labels loaded')
+@app.on_event("startup")
+def startup_event():
+    print("Initializing vectorizer...")
 
-# vectorizer = model = classes = None
+    global vectorizer = pickle_loader(os.path.join(
+        os.getcwd(), "app/data/vectorizer.pkl"))
+
+    print("Initializing model...")
+    global model = pickle_loader(os.path.join(
+        os.getcwd(), "app/data/LRclf.pkl"))
+
+    classes = {}
+    # Load classification codes and labels
+    with open(os.path.join(
+            os.getcwd(), "app/data/classification_text.csv"),
+            mode='r') as infile:
+        dict_reader = csv.DictReader(infile)
+        global classes = {i['label'].lower().strip(): i['id'] for i in dict_reader}
+    print('codes and labels loaded')
 
 
 def predict(input_text: List[str] = ['Hello world'],
@@ -74,7 +78,7 @@ def predict(input_text: List[str] = ['Hello world'],
     return contentions
 
 
-@ app.post("/", response_model=Prediction)
+@app.post("/", response_model=Prediction)
 def claims_attributes_API(claim_input: ClaimInput):
     """
     Make a prediction

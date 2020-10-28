@@ -12,9 +12,9 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 
 COPY pyproject.toml poetry.lock* /app/
 
-RUN poetry install --no-root --no-dev
+RUN poetry install
 
-COPY ./app /app
+COPY ./ /app
 
 # # copy contents of project into docker
 # COPY ./ /app
