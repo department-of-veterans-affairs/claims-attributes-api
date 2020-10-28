@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from sklearn.externals.joblib import load as pickle_loader
 from scipy.sparse.csr import csr_matrix
-from .schemas import ClaimInput, Classification, Flash, SpecialIssue, Contention, Prediction
+from .schemas import (
+    ClaimInput, Classification, Contention, Prediction
+)
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 from typing import List
