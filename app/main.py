@@ -31,16 +31,16 @@ print("Initializing vectorizer...")
 app = FastAPI()
 app.openapi = custom_openapi
 vectorizer = pickle_loader(os.path.join(
-    os.getcwd(), "attributes_fastapi/data/vectorizer.pkl"))
+    os.getcwd(), "app/data/vectorizer.pkl"))
 
 print("Initializing model...")
 model = pickle_loader(os.path.join(
-    os.getcwd(), "attributes_fastapi/data/LRclf.pkl"))
+    os.getcwd(), "app/data/LRclf.pkl"))
 
 classes = {}
 # Load classification codes and labels
 with open(os.path.join(
-        os.getcwd(), "attributes_fastapi/data/classification_text.csv"),
+        os.getcwd(), "app/data/classification_text.csv"),
         mode='r') as infile:
     dict_reader = csv.DictReader(infile)
     classes = {i['label'].lower().strip(): i['id'] for i in dict_reader}
