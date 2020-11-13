@@ -15,5 +15,6 @@ RUN /install-awscli
 RUN /install-docker
 
 # Install Git-lfs
-RUN retry curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | sudo bash
-RUN yum install -y -q git-lfs && git lfs install
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash \
+    && retry yum install -y -q git-lfs \
+    && git lfs install
