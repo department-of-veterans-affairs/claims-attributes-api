@@ -91,3 +91,84 @@ This job posts the repository to ECR, from where you can clone it and run locall
 * It uses [git-lfs](https://git-lfs.github.com/) for storing large language modeling files
 * It uses [FastAPI](https://fastapi.tiangolo.com/) for quick generation of API documentation
 * It uses two pickled [Scikit-Learn](https://scikit-learn.org/stable/) model files, one for vectorizing input and another for associating claims text with numeric classifications
+
+## Example Run
+
+```
+curl -H "Content-Type: application/json" -X POST -d '{"claim_text":["Ringing in my ear", "cancer due to agent orange", "p.t.s.d from gulf war", "recurring nightmares", "skin condition because of homelessness"]}' localhost:8000/benefits-claims-attributes/
+```
+
+The response should looks like this:
+
+```
+{
+   "contentions" : [
+      {
+         "classification" : {
+            "text" : "hearing loss",
+            "code" : "3140",
+            "confidence" : 96
+         },
+         "specialIssues" : [],
+         "flashes" : [],
+         "originalText" : "Ringing in my ear"
+      },
+      {
+         "classification" : {
+            "text" : "cancer - genitourinary",
+            "code" : "8935",
+            "confidence" : 96
+         },
+         "originalText" : "cancer due to agent orange",
+         "flashes" : [],
+         "specialIssues" : [
+            {
+               "text" : "AOOV"
+            }
+         ]
+      },
+      {
+         "specialIssues" : [
+            {
+               "text" : "GW"
+            },
+            {
+               "text" : "PTSD/1"
+            }
+         ],
+         "flashes" : [],
+         "originalText" : "p.t.s.d from gulf war",
+         "classification" : {
+            "confidence" : 96,
+            "code" : "8989",
+            "text" : "mental disorders"
+         }
+      },
+      {
+         "classification" : {
+            "confidence" : 96,
+            "code" : "8989",
+            "text" : "mental disorders"
+         },
+         "originalText" : "recurring nightmares",
+         "flashes" : [],
+         "specialIssues" : []
+      },
+      {
+         "classification" : {
+            "text" : "skin",
+            "confidence" : 96,
+            "code" : "9016"
+         },
+         "flashes" : [
+            {
+               "text" : "Homeless"
+            }
+         ],
+         "originalText" : "skin condition because of homelessness",
+         "specialIssues" : []
+      }
+   ]
+}
+```
+
