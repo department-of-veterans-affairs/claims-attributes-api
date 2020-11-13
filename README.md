@@ -94,13 +94,13 @@ This job posts the repository to ECR, from where you can clone it and run locall
 
 ## Example Run
 
-```
+```sh
 curl -H "Content-Type: application/json" -X POST -d '{"claim_text":["Ringing in my ear", "cancer due to agent orange", "p.t.s.d from gulf war", "recurring nightmares", "skin condition because of homelessness"]}' localhost:8000/benefits-claims-attributes/
 ```
 
 The response should looks like this:
 
-```
+```json
 {
    "contentions" : [
       {
@@ -171,4 +171,3 @@ The response should looks like this:
    ]
 }
 ```
-
