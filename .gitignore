@@ -1,5 +1,4 @@
-**/.DS_Store
+**/.terraform/*
+*.tfstate
+*.tfstate.*
 __pycache__
-**.pyc
-**.pkl
-vars.yml

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+AWS_DIR='/tmp/aws'
+
+mkdir -p $AWS_DIR/
+
+curl -sL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o $AWS_DIR/awscliv2.zip
+unzip -q $AWS_DIR/awscliv2.zip -d $AWS_DIR
+
+bash $AWS_DIR/aws/install 
+
+aws --version

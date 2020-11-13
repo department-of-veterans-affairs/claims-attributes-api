@@ -1,79 +1,93 @@
 # Claims Attributes API
 
-# Updates: The current version now supports multiple contentions in the same request and returns additional information about flashes and special issues.
+## Description
 
-This API uses Natural Language Understading to infer 526 Benefit Claims Attributes, like classification, flashes and special issues,  from text and other features.
-
+This API uses Natural Language Understading to infer 526 Benefit Claims Attributes, like classification, flashes and special issues, from text and other features.
 
 ## Setup
 
+*Important!*
+This project uses [git-lfs](https://git-lfs.github.com/) for storing large language modeling files. It is necessary to install this tool locally in order to properly work with these datafiles. Do so by running:
 
-Obtain the vectorier and predictive model files from someone on the team and add them to the following directories:
-```
-classifier_service/data/LRclf.pkl
-vectorizer_service/data/vectorizer.pkl
-```
-
-### If deploying in container comment out the port assignment in each .py of /api and /*_service/
-
-### Running locally (not containerized) 
-
-Open three terminal tabs, one to `/api`, one to `/classifier_service`, one to `/vectorizer_service`, , one to `/flashes_service`, one to `/special_issues_service`.
-
-Export the following vars in each respective tab:
-
-```
-export FLASK_APP=api.py 
-export VECTORIZER_URI=http://127.0.0.1:5001/
-export CLASSIFIER_URI=http://127.0.0.1:5002/
-export FLASHES_URI=http://127.0.0.1:5003/
-export SPECIAL_ISSUES_URI=http://127.0.0.1:5004/
-python api.py
+```sh
+brew install git-lfs
+git lfs install
 ```
 
-```
-export FLASK_RUN_PORT=5001
-export FLASK_APP=vectorizer.py
-python vectorizer.py
-```
+Please run the above before checkout. If you checkout first and install `gif-lfs` later, you can run the below to check out the files:
 
-```
-export FLASK_RUN_PORT=5002
-export FLASK_APP=classifier.py
-python classifier.py
+```sh
+git lfs checkout
 ```
 
+When you work with these files going forward they will appear to be their binary versions on disk, but a pre-commit hook will convert them to file pointers.
+
+## Building + Running
+
+### Local
+
+#### Build
+
+1. Install
+
+   It is recommended to install [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv) in order to isolate python versions and dependencies. You can still build without these using system python, but they will keep things cleaner
+
+   ```sh
+   brew install pyenv
+   brew install pyenv-virtualenv
+   echo 'eval "$(pyenv init -)\n$(pyenv virtualenv-init -)\n"' >> ~/.bash_profile
+   pyenv install  3.7.3
+   pyenv virtualenv  3.7.3 claims-attributes-api-3.7.3
+   pyenv activate claims-attributes-api-3.7.3
+   exec "$SHELL"
+   ```
+
+   Then to install dependencies:
+   ```sh
+   pip install -r requirements.txt
+   ```
+
+#### Run
+
+Run `uvicorn app.main:app --reload` to run the Uvicorn server. 
+
+### Docker
+
+This project builds with Docker [multistage](https://docs.docker.com/develop/develop-images/multistage-build/) builds via the `Dockerfile`.
+
+#### Build
+
+```sh
+docker build -t api .
 ```
-export FLASK_RUN_PORT=5003
-export FLASK_APP=flashes.py
-python flashes.py
+
+#### Run
+
+```sh
+docker run --name api -p 8000:80 api:latest
 ```
 
-```
-export FLASK_RUN_PORT=5004
-export FLASK_APP=special_issues.py
-python special_issues.py
-```
+### Jenkins
+
+VA corporate CI jobs run on Jenkins, with a build agent built with its own Dockerfile. We keep the `Jenkinsfile` simple by using the `standardShellBuild` shared function, and relying on parent Docker images in the Octopus [repo(private)](https://github.com/department-of-veterans-affairs/health-apis-docker-octopus/tree/master).
 
 
-#### Example API call
+#### Build
 
-```
-curl -i -H "Content-Type: application/json" -X POST -d '{"claim_text":["Ringing in my ear", "cancer due to agent orange", "p.t.s.d from gulf war", "recurring nightmares", "skin condition because of homelessness"]}' http://127.0.0.1:5000/
-```
+Standard Shell build:
 
-The response should looks like this:
+1. Builds our `Dockerfile.build` agent image
+2. Runs `build.sh` on it, which builds our image via the `Dockerfile`
+3. Deploys the image to ECR
 
-```
-{"classifications":[{"code": "3140", "text": "hearing loss"}, {"code": "8935", "text": "cancer - genitourinary"}, {"code": "8977", "text": "gulf war undiagnosed illness"}, {"code": "8989", "text": "mental disorders"}, {"code": "9016", "text": "skin"}],"flashes_text":["Homeless"],"special_issues_text":["PTSD/1","AOOV","GW"]}
-```
+See more about this setup [here (Private Repo)](https://github.com/department-of-veterans-affairs/health-apis-devops/tree/master/ci).
 
 
-#### Python Version: 3.7
+#### Run
+This job posts the repository to ECR, from where you can clone it and run locally with `docker run`.
 
+## Technical Background
 
-Created by: Nel Abdiel 
-
-Based on the work done by: Bennett Gebken
-
-Restructure by: Patrick Bateman, Alex Prokop
+* It uses [git-lfs](https://git-lfs.github.com/) for storing large language modeling files
+* It uses [FastAPI](https://fastapi.tiangolo.com/) for quick generation of API documentation
+* It uses two pickled [Scikit-Learn](https://scikit-learn.org/stable/) model files, one for vectorizing input and another for associating claims text with numeric classifications
