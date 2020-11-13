@@ -4,7 +4,7 @@ ECR_REGISTRY=533575416491.dkr.ecr.us-gov-west-1.amazonaws.com
 IMAGE_NAME=benefits-apis-claims-attributes
 IMAGE=$ECR_REGISTRY/$IMAGE_NAME:$VERSION
 
-docker build --build-arg cert_file=ca-certs.pem -t $IMAGE .
+docker build -t $IMAGE .
 
 if [ $RELEASE == true ]
 then
