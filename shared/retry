@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+for i in {0..5}; do
+  $@ && exit 0 || sleep 5
+done
+
+exit 1
