@@ -30,27 +30,21 @@ When you work with these files going forward they will appear to be their binary
 
 1. Install
 
-   It is recommended to install [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv) in order to isolate python versions and dependencies. You can still build without these using system python, but they will keep things cleaner
+   This project uses [Poetry](https://python-poetry.org/) for managing dependencies and packaging. It is configured via the file `pyproject.toml`, and dependencies are stored in `poetry.lock`. To add additional dependencies, use `poetry add` to resolve the dependency tree.
 
    ```sh
-   brew install pyenv
-   brew install pyenv-virtualenv
-   echo 'eval "$(pyenv init -)\n$(pyenv virtualenv-init -)\n"' >> ~/.bash_profile
-   pyenv install  3.7.3
-   pyenv virtualenv  3.7.3 claims-attributes-api-3.7.3
-   pyenv activate claims-attributes-api-3.7.3
-   exec "$SHELL"
+   curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
    ```
 
-   Then to install dependencies:
+2. Use poetry to install dependencies
 
    ```sh
-   pip install -r requirements.txt
+   poetry install
    ```
 
 #### Run
 
-Run `uvicorn claims_attributes.main:app --reload` to run the Uvicorn server.
+Run `poetry run server` to run the app. This uses a function in `scripts.py` defined in `pyproject.toml`. Under the hood, FastAPI uses the gunicorn ASGI server to serve content.
 
 ### Docker
 
@@ -88,8 +82,10 @@ This job posts the repository to ECR, from where you can clone it and run locall
 
 ## Technical Background
 
+- This project uses the [Poetry](https://python-poetry.org/) dependency management and packaging tool
 - It uses [git-lfs](https://git-lfs.github.com/) for storing large language modeling files
 - It uses [FastAPI](https://fastapi.tiangolo.com/) for quick generation of API documentation
+- It uses the [uvicorn-gunicorn-fastapi-docker](https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker) docker image as a base image to configure and run the ASGI server
 - It uses two pickled [Scikit-Learn](https://scikit-learn.org/stable/) model files, one for vectorizing input and another for associating claims text with numeric classifications
 
 ## Example Run

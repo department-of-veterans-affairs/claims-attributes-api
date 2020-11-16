@@ -18,3 +18,8 @@ RUN /install-docker
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash \
     && retry yum install -y -q git-lfs \
     && git lfs install
+
+# Install certs
+ENV SSL_CERT_FILE=$ADDITIONAL_CA_CERTS/ca-certs.pem
+COPY shared/combine-ca-certs /combine-ca-serts
+RUN /combine-ca-certs $SSL_CERT_FILE
