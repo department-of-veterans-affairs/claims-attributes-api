@@ -9,12 +9,14 @@ ENV MODULE_NAME="claims_attributes.main"
 # COPY install-certs.sh /tmp/install-certs.sh
 # RUN bash /tmp/install-certs.sh
 
-WORKDIR /app
 # Install Poetry
 ENV POETRY_VERSION 1.1.4
 
-RUN pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org  "poetry==${POETRY_VERSION}"
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
+    cd /usr/local/bin && \
+    ln -s /opt/poetry/bin/poetry && \
+    poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock* /app/
 RUN poetry install --no-dev --no-root
-COPY ./claims_attributes ./claims_attributes
+COPY ./claims_attributes /app/claims_attributes
