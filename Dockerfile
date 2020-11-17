@@ -16,6 +16,7 @@ ARG cert_file
 # if --build-arg cert_file has been set, set REQUESTS_CA_BUNDLE to its value, or null otherwise
 ENV REQUESTS_CA_BUNDLE=${cert_file:+$cert_file}
 ENV CURL_CA_BUNDLE=${cert_file:+$cert_file}
+ENV SSL_CERT_FILE=${cert_file:+$cert_file}
 
 RUN echo "(FROM DOCKERFILE): cert_file: ${cert_file}, CURL_CA_BUNDLE: ${CURL_CA_BUNDLE} REQUESTS_CA_BUNDLE: ${REQUESTS_CA_BUNDLE}"
 
