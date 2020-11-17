@@ -5,6 +5,7 @@ FROM vasdvp/health-apis-centos:8
 ADD shared/install-git-centos8 /install-git
 ADD shared/install-docker-centos8 /install-docker
 ADD shared/install-awscli /install-awscli
+ADD shared/combine-ca-certs /combine-ca-certs
 ADD shared/retry /usr/local/bin/retry
 
 #
