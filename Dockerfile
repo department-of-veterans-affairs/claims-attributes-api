@@ -9,7 +9,7 @@ ARG cert_file
 # Note that the asterisks here are meant to copy even if the file doesn't yet exist. We need this for a local build without a ca-cert file
 COPY pyproject.toml poetry.lock* ${cert_file}? /app/
 
-RUN test -d /app/ca-certs.crt && echo 'Cert file Exists'
+RUN test -z /app/ca-certs.crt || 'Cert file missing' && echo 'Cert file Exists'
 
 # if --build-arg cert_file has been set, set REQUESTS_CA_BUNDLE to its value, or null otherwise
 ENV REQUESTS_CA_BUNDLE=/app/ca-certs.crt
