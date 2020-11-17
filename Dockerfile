@@ -14,6 +14,7 @@ ENV POETRY_VERSION 1.1.4
 
 # if --build-arg cert_file has been set, set REQUESTS_CA_BUNDLE to its value, or null otherwise
 ENV REQUESTS_CA_BUNDLE=${cert_file:+$cert_file}
+ENV CURL_CA_BUNDLE=${cert_file:+$cert_file}
 
 RUN curl -sSkL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
     cd /usr/local/bin && \
