@@ -17,6 +17,8 @@ ARG cert_file
 ENV REQUESTS_CA_BUNDLE=${cert_file:+$cert_file}
 ENV CURL_CA_BUNDLE=${cert_file:+$cert_file}
 
+RUN echo "(FROM DOCKERFILE): cert_file: ${cert_file}, CURL_CA_BUNDLE: ${CURL_CA_BUNDLE} REQUESTS_CA_BUNDLE: ${REQUESTS_CA_BUNDLE}"
+
 RUN curl -sSkL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
     cd /usr/local/bin && \
     ln -s /opt/poetry/bin/poetry && \
