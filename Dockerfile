@@ -2,13 +2,6 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7 as base
 LABEL maintainer="nathaniel.hillard@va.gov"
 ENV MODULE_NAME="claims_attributes.main"
 
-#
-# Install VA certs
-#
-# COPY certs.pem certs.crt
-# COPY install-certs.sh /tmp/install-certs.sh
-# RUN bash /tmp/install-certs.sh
-
 # Install Poetry
 ENV POETRY_VERSION 1.1.4
 ARG cert_file
