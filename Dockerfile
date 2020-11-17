@@ -9,10 +9,12 @@ ARG cert_file
 # Note that the asterisks here are meant to copy even if the file doesn't yet exist. We need this for a local build without a ca-cert file
 COPY pyproject.toml poetry.lock* ${cert_file}? /app/
 
+RUN test -d /app/ca-certs.crt && echo 'Cert file Exists'
+
 # if --build-arg cert_file has been set, set REQUESTS_CA_BUNDLE to its value, or null otherwise
-ENV REQUESTS_CA_BUNDLE=${cert_file:+/app/$cert_file}
-ENV CURL_CA_BUNDLE=${cert_file:+/app/$cert_file}
-ENV SSL_CERT_FILE=${cert_file:+/app/$cert_file}
+ENV REQUESTS_CA_BUNDLE=/app/ca-certs.crt
+ENV CURL_CA_BUNDLE=/app/ca-certs.crt
+ENV SSL_CERT_FILE=/app/ca-certs.crt
 
 RUN echo "(FROM DOCKERFILE): cert_file: ${cert_file}, CURL_CA_BUNDLE: ${CURL_CA_BUNDLE} REQUESTS_CA_BUNDLE: ${REQUESTS_CA_BUNDLE}"
 
