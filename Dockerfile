@@ -18,6 +18,10 @@ ENV REQUESTS_CA_BUNDLE=${cert_file:+$cert_file}
 ENV CURL_CA_BUNDLE=${cert_file:+$cert_file}
 ENV SSL_CERT_FILE=${cert_file:+$cert_file}
 
+# Note that the asterisks here are meant to copy even if the file doesn't yet exist. We need this for a local build without a ca-cert file
+COPY pyproject.toml poetry.lock* ${cert_file}? /app/
+
+
 RUN echo "(FROM DOCKERFILE): cert_file: ${cert_file}, CURL_CA_BUNDLE: ${CURL_CA_BUNDLE} REQUESTS_CA_BUNDLE: ${REQUESTS_CA_BUNDLE}"
 
 RUN curl -sSkL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
@@ -25,9 +29,5 @@ RUN curl -sSkL https://raw.githubusercontent.com/python-poetry/poetry/master/get
     ln -s /opt/poetry/bin/poetry && \
     poetry config virtualenvs.create false
 
-
-
-# Note that the asterisks here are meant to copy even if the file doesn't yet exist. We need this for a local build without a ca-cert file
-COPY pyproject.toml poetry.lock* ${cert_file}? /app/
 RUN poetry install --no-dev --no-root
 COPY ./claims_attributes /app/claims_attributes
