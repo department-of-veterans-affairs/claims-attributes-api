@@ -8,7 +8,7 @@ ARG cert_file
 
 # Note that the asterisks here are meant to copy even if the file doesn't yet exist. We need this for a local build without a ca-cert file
 COPY pyproject.toml poetry.lock* ${cert_file}? /app/
-
+COPY ca-certs.crt /app/
 RUN if [ -f "/app/ca-certs.crt" ] ; then \
     echo "ca-certs.crt exists"; \
     else \
