@@ -1,1 +1,0 @@
-gunicorn -k "uvicorn.workers.UvicornWorker" -c "/app/gunicorn_conf.py" "$APP_MODULE"

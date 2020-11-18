@@ -4,7 +4,6 @@
 ###############################################
 FROM python:3.8-slim as python-base
 LABEL maintainer="nathaniel.hillard@va.gov"
-ENV APP_MODULE="claims_attributes.main"
 
 # Note that we currently require a local ca-certs.crt file. 
 # You can copy this from the path of $(python -m certifi)
@@ -44,6 +43,10 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 ###############################################
 
 FROM python-base as builder-base
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+    curl \
+    build-essential
 
 # install poetry - respects $POETRY_VERSION & $POETRY_HOME
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
@@ -63,6 +66,14 @@ COPY ./gunicorn_conf.py /app/gunicorn_conf.py
 COPY ./start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
+# Copying our app
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY ./claims_attributes /app/claims_attributes
-CMD ["/start.sh"]
+
+# Copying in our entrypoint
+COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Entrypoint will run the below command as part of its run
+ENTRYPOINT /docker-entrypoint.sh $0 $@
+CMD ["gunicorn", "--worker-class uvicorn.workers.UvicornWorker" "--config /app/gunicorn_conf.py" "claims_attributes.main"]
