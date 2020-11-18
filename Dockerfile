@@ -62,18 +62,18 @@ RUN poetry install --no-dev
 # Production Image
 ###############################################
 FROM python-base as production
-COPY ./gunicorn_conf.py /app/gunicorn_conf.py
-COPY ./start.sh /app/start.sh
-RUN chmod +x /app/start.sh
 
-# Copying our app
-COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
-COPY ./claims_attributes /app/claims_attributes
+# Copying our virtualenv
+COPY --from=builder-base $VENV_PATH $VENV_PATH
 
-# Copying in our entrypoint
-COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
+# Copying in our entrypoint and configs
+COPY gunicorn_conf.py /gunicorn_conf.py
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
+
+COPY claims_attributes /app/claims_attributes
 
 # Entrypoint will run the below command as part of its run
 ENTRYPOINT /docker-entrypoint.sh $0 $@
-CMD ["gunicorn", "--worker-class uvicorn.workers.UvicornWorker" "--config /app/gunicorn_conf.py" "claims_attributes.main"]
+CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py",  "claims_attributes.main"]
