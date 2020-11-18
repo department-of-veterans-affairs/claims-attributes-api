@@ -6,7 +6,7 @@ This API uses Natural Language Understading to infer 526 Benefit Claims Attribut
 
 ## Setup
 
-*Important!*
+_Important!_
 This project uses [git-lfs](https://git-lfs.github.com/) for storing large language modeling files. It is necessary to install this tool locally in order to properly work with these datafiles. Do so by running:
 
 ```sh
@@ -28,28 +28,31 @@ When you work with these files going forward they will appear to be their binary
 
 #### Build
 
-1. Install
-
-   It is recommended to install [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv) in order to isolate python versions and dependencies. You can still build without these using system python, but they will keep things cleaner
+1. Install pyenv, then python version 3.8.6 (note that as of this commit, scikit-learn has a bug in compiling against 3.9.0 )
 
    ```sh
    brew install pyenv
-   brew install pyenv-virtualenv
-   echo 'eval "$(pyenv init -)\n$(pyenv virtualenv-init -)\n"' >> ~/.bash_profile
-   pyenv install  3.7.3
-   pyenv virtualenv  3.7.3 claims-attributes-api-3.7.3
-   pyenv activate claims-attributes-api-3.7.3
-   exec "$SHELL"
+   pyenv install 3.8.6
+   pyenv local 3.8.6
    ```
 
-   Then to install dependencies:
+1. Install Poetry
+
+   This project uses [Poetry](https://python-poetry.org/) for managing dependencies and packaging. It is configured via the file `pyproject.toml`, and dependencies are stored in `poetry.lock`. To add additional dependencies, use `poetry add` to resolve the dependency tree.
+
    ```sh
-   pip install -r requirements.txt
+   curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+   ```
+
+1. Use poetry to install dependencies
+
+   ```sh
+   poetry install
    ```
 
 #### Run
 
-Run `uvicorn app.main:app --reload` to run the Uvicorn server. 
+Run `poetry run server` to run the app. This uses a function in `scripts.py` defined in `pyproject.toml`. Under the hood, FastAPI uses the gunicorn ASGI server to serve content.
 
 ### Docker
 
@@ -71,7 +74,6 @@ docker run --name api -p 8000:80 api:latest
 
 VA corporate CI jobs run on Jenkins, with a build agent built with its own Dockerfile. We keep the `Jenkinsfile` simple by using the `standardShellBuild` shared function, and relying on parent Docker images in the Octopus [repo(private)](https://github.com/department-of-veterans-affairs/health-apis-docker-octopus/tree/master).
 
-
 #### Build
 
 Standard Shell build:
@@ -82,15 +84,17 @@ Standard Shell build:
 
 See more about this setup [here (Private Repo)](https://github.com/department-of-veterans-affairs/health-apis-devops/tree/master/ci).
 
-
 #### Run
+
 This job posts the repository to ECR, from where you can clone it and run locally with `docker run`.
 
 ## Technical Background
 
-* It uses [git-lfs](https://git-lfs.github.com/) for storing large language modeling files
-* It uses [FastAPI](https://fastapi.tiangolo.com/) for quick generation of API documentation
-* It uses two pickled [Scikit-Learn](https://scikit-learn.org/stable/) model files, one for vectorizing input and another for associating claims text with numeric classifications
+- This project uses the [Poetry](https://python-poetry.org/) dependency management and packaging tool
+- It uses [git-lfs](https://git-lfs.github.com/) for storing large language modeling files
+- It uses [FastAPI](https://fastapi.tiangolo.com/) for quick generation of API documentation
+- It uses the [uvicorn-gunicorn-fastapi-docker](https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker) docker image as a base image to configure and run the ASGI server
+- It uses two pickled [Scikit-Learn](https://scikit-learn.org/stable/) model files, one for vectorizing input and another for associating claims text with numeric classifications
 
 ## Example Run
 
@@ -102,72 +106,72 @@ The response should looks like this:
 
 ```json
 {
-   "contentions" : [
-      {
-         "classification" : {
-            "text" : "hearing loss",
-            "code" : "3140",
-            "confidence" : 96
-         },
-         "specialIssues" : [],
-         "flashes" : [],
-         "originalText" : "Ringing in my ear"
+  "contentions": [
+    {
+      "classification": {
+        "text": "hearing loss",
+        "code": "3140",
+        "confidence": 96
       },
-      {
-         "classification" : {
-            "text" : "cancer - genitourinary",
-            "code" : "8935",
-            "confidence" : 96
-         },
-         "originalText" : "cancer due to agent orange",
-         "flashes" : [],
-         "specialIssues" : [
-            {
-               "text" : "AOOV"
-            }
-         ]
+      "specialIssues": [],
+      "flashes": [],
+      "originalText": "Ringing in my ear"
+    },
+    {
+      "classification": {
+        "text": "cancer - genitourinary",
+        "code": "8935",
+        "confidence": 96
       },
-      {
-         "specialIssues" : [
-            {
-               "text" : "GW"
-            },
-            {
-               "text" : "PTSD/1"
-            }
-         ],
-         "flashes" : [],
-         "originalText" : "p.t.s.d from gulf war",
-         "classification" : {
-            "confidence" : 96,
-            "code" : "8989",
-            "text" : "mental disorders"
-         }
-      },
-      {
-         "classification" : {
-            "confidence" : 96,
-            "code" : "8989",
-            "text" : "mental disorders"
-         },
-         "originalText" : "recurring nightmares",
-         "flashes" : [],
-         "specialIssues" : []
-      },
-      {
-         "classification" : {
-            "text" : "skin",
-            "confidence" : 96,
-            "code" : "9016"
-         },
-         "flashes" : [
-            {
-               "text" : "Homeless"
-            }
-         ],
-         "originalText" : "skin condition because of homelessness",
-         "specialIssues" : []
+      "originalText": "cancer due to agent orange",
+      "flashes": [],
+      "specialIssues": [
+        {
+          "text": "AOOV"
+        }
+      ]
+    },
+    {
+      "specialIssues": [
+        {
+          "text": "GW"
+        },
+        {
+          "text": "PTSD/1"
+        }
+      ],
+      "flashes": [],
+      "originalText": "p.t.s.d from gulf war",
+      "classification": {
+        "confidence": 96,
+        "code": "8989",
+        "text": "mental disorders"
       }
-   ]
+    },
+    {
+      "classification": {
+        "confidence": 96,
+        "code": "8989",
+        "text": "mental disorders"
+      },
+      "originalText": "recurring nightmares",
+      "flashes": [],
+      "specialIssues": []
+    },
+    {
+      "classification": {
+        "text": "skin",
+        "confidence": 96,
+        "code": "9016"
+      },
+      "flashes": [
+        {
+          "text": "Homeless"
+        }
+      ],
+      "originalText": "skin condition because of homelessness",
+      "specialIssues": []
+    }
+  ]
 }
 ```
