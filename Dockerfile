@@ -1,21 +1,65 @@
+###############################################
+# Base Image
+# Install certs, set ENV
+###############################################
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7 as base
 LABEL maintainer="nathaniel.hillard@va.gov"
+
+# Override parent module default name ("app")
 ENV MODULE_NAME="claims_attributes.main"
 
-# Install Poetry
-ENV POETRY_VERSION 1.1.4
-
-# Note that the asterisks here are meant to copy even if the file doesn't yet exist. We need this for a local build without the ca-certs file
-COPY pyproject.toml poetry.lock* ca-certs.crt* /app/
+# Note that we currently require a local ca-certs.crt file. 
+# You can copy this from the path of $(python -m certifi)
+COPY ca-certs.crt /app/
 
 ENV REQUESTS_CA_BUNDLE=/app/ca-certs.crt
 ENV CURL_CA_BUNDLE=/app/ca-certs.crt
 ENV SSL_CERT_FILE=/app/ca-certs.crt
 
-RUN curl -sSkL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
-    cd /usr/local/bin && \
-    ln -s /opt/poetry/bin/poetry && \
-    poetry config virtualenvs.create false
+# For python args, see https://docs.python.org/3/using/cmdline.html
+# Allows for writing logs to be dumped immediately 
+ENV PYTHONUNBUFFERED=1 \
+    # Removes .pyc files
+    PYTHONDONTWRITEBYTECODE=1 \
+    # PIP cache has no use in Docker images
+    PIP_NO_CACHE_DIR=off \
+    # pip checks for new versions every invocation by default
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    # Some installs take a long time
+    PIP_DEFAULT_TIMEOUT=100 \
+    # For below, see https://python-poetry.org/docs/configuration/#using-environment-variables
+    POETRY_VERSION=1.1.4 \ 
+    POETRY_HOME="/opt/poetry" \
+    POETRY_NO_INTERACTION=1 \
+    PYSETUP_PATH="/opt/pysetup" \
+    VENV_PATH="/opt/pysetup/.venv" \
+    # Create the virtual env in the project directory
+    POETRY_VIRTUALENVS_IN_PROJECT=true  
 
-RUN poetry install --no-dev --no-root
+# prepend poetry and venv to path
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+
+###############################################
+# Builder Image
+# A build stage: https://docs.docker.com/develop/develop-images/multistage-build/
+# Build dependencies, create the virtual environment
+###############################################
+
+FROM base as builder-base
+
+# install poetry - respects $POETRY_VERSION & $POETRY_HOME
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+
+# Cache project requirements
+WORKDIR $PYSETUP_PATH
+COPY poetry.lock pyproject.toml ./
+
+# install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
+RUN poetry install --no-dev
+
+###############################################
+# Production Image
+###############################################
+FROM base as production
+COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY ./claims_attributes /app/claims_attributes
