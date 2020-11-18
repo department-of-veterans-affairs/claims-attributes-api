@@ -66,7 +66,7 @@ d = ["aiohttp (>=3.3.2)", "aiohttp-cors"]
 name = "certifi"
 version = "2020.11.8"
 description = "Python package for providing Mozilla's CA Bundle."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -467,7 +467,7 @@ python-versions = ">=3.6.1"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "bef7309e522fdfab9ef091a8c1cb956e824c6dda44a9eb6e2e24eb8ead32ccbd"
+content-hash = "1c89b991e3458c0a1af44ae5e0738b59bda80d40e7afd874d050bd38c8deffa6"
 
 [metadata.files]
 appdirs = [
