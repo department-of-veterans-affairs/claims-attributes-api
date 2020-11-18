@@ -1,3 +1,6 @@
+# Adapted from:
+# https://github.com/michael0liver/python-poetry-docker-example/blob/master/docker/Dockerfile
+
 ###############################################
 # Base Image
 # Install certs, set ENV

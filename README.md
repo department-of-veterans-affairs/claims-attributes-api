@@ -28,7 +28,15 @@ When you work with these files going forward they will appear to be their binary
 
 #### Build
 
-1. Install
+1. Install pyenv, then python version 3.8.6 (note that as of this commit, scikit-learn has a bug in compiling against 3.9.0 )
+
+   ```sh
+   brew install pyenv
+   pyenv install 3.8.6
+   pyenv local 3.8.6
+   ```
+
+1. Install Poetry
 
    This project uses [Poetry](https://python-poetry.org/) for managing dependencies and packaging. It is configured via the file `pyproject.toml`, and dependencies are stored in `poetry.lock`. To add additional dependencies, use `poetry add` to resolve the dependency tree.
 
@@ -36,7 +44,7 @@ When you work with these files going forward they will appear to be their binary
    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
    ```
 
-2. Use poetry to install dependencies
+1. Use poetry to install dependencies
 
    ```sh
    poetry install
