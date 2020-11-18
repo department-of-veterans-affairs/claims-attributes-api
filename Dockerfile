@@ -75,5 +75,6 @@ RUN chmod +x /docker-entrypoint.sh
 COPY claims_attributes /app/claims_attributes
 
 # Entrypoint will run the below command as part of its run
+WORKDIR /app
 ENTRYPOINT /docker-entrypoint.sh $0 $@
-CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py",  "claims_attributes.main"]
+CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py",  "claims_attributes.main:app"]
