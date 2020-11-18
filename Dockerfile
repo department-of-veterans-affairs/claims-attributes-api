@@ -2,11 +2,9 @@
 # Base Image
 # Install certs, set ENV
 ###############################################
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7 as base
+FROM python:3.8-slim as python-base
 LABEL maintainer="nathaniel.hillard@va.gov"
-
-# Override parent module default name ("app")
-ENV MODULE_NAME="claims_attributes.main"
+ENV APP_MODULE="claims_attributes.main"
 
 # Note that we currently require a local ca-certs.crt file. 
 # You can copy this from the path of $(python -m certifi)
@@ -45,7 +43,7 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 # Build dependencies, create the virtual environment
 ###############################################
 
-FROM base as builder-base
+FROM python-base as builder-base
 
 # install poetry - respects $POETRY_VERSION & $POETRY_HOME
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
@@ -60,6 +58,11 @@ RUN poetry install --no-dev
 ###############################################
 # Production Image
 ###############################################
-FROM base as production
+FROM python-base as production
+COPY ./gunicorn_conf.py /app/gunicorn_conf.py
+COPY ./start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY ./claims_attributes /app/claims_attributes
+CMD ["/start.sh"]
