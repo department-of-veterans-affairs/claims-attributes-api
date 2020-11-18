@@ -5,7 +5,7 @@ description = ""
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 fastapi = "^0.61"
 joblib = "^0.17.0"
 scikit-learn = "^0.23.2"
