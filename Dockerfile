@@ -8,13 +8,13 @@
 FROM python:3.8-slim as python-base
 LABEL maintainer="nathaniel.hillard@va.gov"
 
-# Note that we currently require a local ca-certs.crt file. 
-# You can copy this from the path of $(python -m certifi)
-COPY ca-certs.crt /app/
+# Note that we currently require a local cacert.pem file. 
+# You can copy this from the path of $(python -m certifi) or use the default one in the repo.
+COPY cacert.pem /app/
 
-ENV REQUESTS_CA_BUNDLE=/app/ca-certs.crt
-ENV CURL_CA_BUNDLE=/app/ca-certs.crt
-ENV SSL_CERT_FILE=/app/ca-certs.crt
+ENV REQUESTS_CA_BUNDLE=/app/cacert.pem
+ENV CURL_CA_BUNDLE=/app/cacert.pem
+ENV SSL_CERT_FILE=/app/cacert.pem
 
 # For python args, see https://docs.python.org/3/using/cmdline.html
 # Allows for writing logs to be dumped immediately 

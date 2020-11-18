@@ -21,6 +21,6 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.r
     && git lfs install
 
 # Install certs
-ENV SSL_CERT_FILE=$ADDITIONAL_CA_CERTS/ca-certs.pem
+ENV SSL_CERT_FILE=$ADDITIONAL_CA_CERTS/cacert.pem
 COPY shared/combine-ca-certs /combine-ca-serts
 RUN /combine-ca-certs $SSL_CERT_FILE

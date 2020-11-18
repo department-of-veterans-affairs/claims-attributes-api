@@ -3,4 +3,3 @@
 *.tfstate.*
 __pycache__
 .vscode/settings.json
-ca-certs.crt
