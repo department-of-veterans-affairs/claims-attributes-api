@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.openapi.utils import get_openapi
 from scipy.sparse.csr import csr_matrix
 from .schemas import ClaimInput, Classification, Contention, Prediction
@@ -14,7 +14,7 @@ from .special_issues import get_special_issues
 
 # All API calls have this prefix in order to avoid Load Balancer conflicts
 api_prefix = "benefits-claims-attributes"
-
+version = "v1"
 
 def custom_openapi():
     if app.openapi_schema:
@@ -30,16 +30,18 @@ def custom_openapi():
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
+app = FastAPI(
+    docs_url=f"/{api_prefix}/{version}/docs", openapi_url=f"/{api_prefix}/{version}/docs/openapi.json"
+)
+app.openapi = custom_openapi
+
+router = APIRouter()
 
 # It is necessary to use this to get the path of the current file
 file_name = inspect.getframeinfo(inspect.currentframe()).filename
 curr_path = os.path.dirname(os.path.abspath(file_name))
 
 print("Initializing vectorizer...")
-app = FastAPI(
-    docs_url=f"/{api_prefix}/docs", openapi_url=f"/{api_prefix}/docs/openapi.json"
-)
-app.openapi = custom_openapi
 vectorizer = joblib.load(os.path.join(curr_path, "data/vectorizer.pkl"))
 
 print("Initializing model...")
@@ -85,12 +87,12 @@ def predict(
     return contentions
 
 
-@app.get(f"/{api_prefix}/healthcheck", status_code=200)
+@router.get("/healthcheck", status_code=200)
 async def healthcheck():
     return "App OK"
 
 
-@app.post(f"/{api_prefix}/", response_model=Prediction)
+@router.post(f"/", response_model=Prediction)
 def claims_attributes_API(claim_input: ClaimInput):
     """
     Make a prediction
@@ -106,3 +108,10 @@ def claims_attributes_API(claim_input: ClaimInput):
     )
     prediction = Prediction(contentions=contentions)
     return prediction
+
+
+
+app.include_router(
+    router,
+    prefix=f"/{api_prefix}/{version}"
+)
