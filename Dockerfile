@@ -10,11 +10,11 @@ LABEL maintainer="nathaniel.hillard@va.gov"
 
 # Note that we currently require a local cacert.pem file. 
 # You can copy this from the path of $(python -m certifi) or use the default one in the repo.
-COPY cacert.pem /app/
+COPY cacert.pem /app/cacert.crt
 
-ENV REQUESTS_CA_BUNDLE=/app/cacert.pem
-ENV CURL_CA_BUNDLE=/app/cacert.pem
-ENV SSL_CERT_FILE=/app/cacert.pem
+ENV REQUESTS_CA_BUNDLE=/app/cacert.crt
+ENV CURL_CA_BUNDLE=/app/cacert.crt
+ENV SSL_CERT_FILE=/app/cacert.crt
 
 # For python args, see https://docs.python.org/3/using/cmdline.html
 # Allows for writing logs to be dumped immediately 
