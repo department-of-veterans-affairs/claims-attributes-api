@@ -77,6 +77,11 @@ RUN chmod +x /docker-entrypoint.sh
 
 COPY claims_attributes /app/claims_attributes
 
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+    curl \
+    build-essential
+
 # Entrypoint will run the below command as part of its run
 WORKDIR /app
 EXPOSE 80
