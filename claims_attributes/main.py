@@ -11,6 +11,7 @@ import inspect
 import joblib
 from .flashes import get_flashes
 from .special_issues import get_special_issues
+from pathlib import Path
 
 # All API calls have this prefix in order to avoid Load Balancer conflicts
 api_prefix = "benefits-claims-attributes"
@@ -19,12 +20,11 @@ version = "v1"
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
+    with open("summary.md") as infile:
     openapi_schema = get_openapi(
         title="Claims Attributes API",
         version="1.0.0",
-        description="""
-                    The Claims Attributes API...
-                    """,
+        description=Path('summary.md').read_text(),
         routes=app.routes,
     )
     app.openapi_schema = openapi_schema
@@ -95,10 +95,7 @@ async def healthcheck():
 @router.post(f"/", response_model=Prediction)
 def claims_attributes_API(claim_input: ClaimInput):
     """
-    Make a prediction
-
-    This takes a user's array of claims_text inputs and outputs
-    a classification code for each.
+    This takes an array of user's claimed disabilities (`claims_text`) and outputs a VA classification code and set of special attributes (`special issues` and `flashes`) for each.
     """
     contentions = predict(
         input_text=claim_input.claim_text,
