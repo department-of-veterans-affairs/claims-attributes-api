@@ -17,21 +17,23 @@ from pathlib import Path
 api_prefix = "benefits-claims-attributes"
 version = "v1"
 
+
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
-    with open("summary.md") as infile:
     openapi_schema = get_openapi(
         title="Claims Attributes API",
         version="1.0.0",
-        description=Path('summary.md').read_text(),
+        description=Path("claims_attributes/summary.md").read_text(),
         routes=app.routes,
     )
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
+
 app = FastAPI(
-    docs_url=f"/{api_prefix}/{version}/docs", openapi_url=f"/{api_prefix}/{version}/docs/openapi.json"
+    docs_url=f"/{api_prefix}/{version}/docs",
+    openapi_url=f"/{api_prefix}/{version}/docs/openapi.json",
 )
 app.openapi = custom_openapi
 
@@ -107,8 +109,4 @@ def claims_attributes_API(claim_input: ClaimInput):
     return prediction
 
 
-
-app.include_router(
-    router,
-    prefix=f"/{api_prefix}/{version}"
-)
+app.include_router(router, prefix=f"/{api_prefix}/{version}")
