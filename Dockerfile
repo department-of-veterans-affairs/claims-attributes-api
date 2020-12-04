@@ -62,6 +62,15 @@ COPY poetry.lock pyproject.toml ./
 RUN poetry install --no-dev
 
 ###############################################
+# Test Image
+# 'test' stage runs our unit tests with pytest and
+# coverage.  Build will fail if test coverage is under 95%
+###############################################
+FROM python-base as test
+RUN coverage run --rcfile ./pyproject.toml -m pytest ./tests
+RUN coverage report --fail-under 90
+
+###############################################
 # Production Image
 ###############################################
 FROM python-base as production
