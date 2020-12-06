@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+# docker-test-entrypoint.sh
+# Used by the deployer and deployment unit as described
+# here: https://github.com/department-of-veterans-affairs/health-apis-deployer/blob/qa/deployment-unit.md
+# Usage: docker run --rm --network host api:testing [regression-test|smoke-test]
+
 set -euo pipefail
 
 usage() {

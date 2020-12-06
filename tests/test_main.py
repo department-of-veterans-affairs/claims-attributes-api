@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
-
 from claims_attributes.main import app
+import pytest
 
 client = TestClient(app)
 
@@ -18,7 +18,11 @@ def test_healthcheck():
     assert response.json() == "App OK"
 
 
-def test_predict():
+# We set a bogus confidence to avoid testing model specifics
+# See more here: https://docs.pytest.org/en/latest/parametrize.html#pytest-mark-parametrize
+@pytest.mark.parametrize("bogus_confidence",
+                         [96.0])
+def test_predict(bogus_confidence):
     response = client.post(
         "/benefits-claims-attributes/v1/",
         json={
@@ -40,7 +44,7 @@ def test_predict():
                 "originalText": "Ringing in my ear",
                 "classification": {
                     "text": "hearing loss",
-                    "confidence": 96,
+                    "confidence": float(f"{bogus_confidence}"),
                     "code": "3140",
                 },
             },
@@ -49,7 +53,7 @@ def test_predict():
                 "specialIssues": [{"text": "AOOV"}],
                 "classification": {
                     "code": "8935",
-                    "confidence": 96,
+                    "confidence": float(f"{bogus_confidence}"),
                     "text": "cancer - genitourinary",
                 },
                 "originalText": "cancer due to agent orange",
@@ -59,7 +63,7 @@ def test_predict():
                 "classification": {
                     "text": "mental disorders",
                     "code": "8989",
-                    "confidence": 96,
+                    "confidence": float(f"{bogus_confidence}"),
                 },
                 "flashes": [],
                 "specialIssues": [{"text": "GW"}, {"text": "PTSD/1"}],
@@ -71,11 +75,11 @@ def test_predict():
                 "classification": {
                     "text": "mental disorders",
                     "code": "8989",
-                    "confidence": 96,
+                    "confidence": float(f"{bogus_confidence}"),
                 },
             },
             {
-                "classification": {"confidence": 96, "code": "9016", "text": "skin"},
+                "classification": {"confidence": float(f"{bogus_confidence}"), "code": "9016", "text": "skin"},
                 "originalText": "skin condition because of homelessness",
                 "specialIssues": [],
                 "flashes": [{"text": "Homeless"}],
