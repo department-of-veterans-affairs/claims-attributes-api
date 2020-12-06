@@ -5,8 +5,15 @@ from claims_attributes.main import app
 client = TestClient(app)
 
 
-def test_basic_response():
-    response = client.post(
+def test_docs():
+    response = await client.get("/benefits-claims-attributes/v1/docs/openapi.json")
+    assert response.status_code == 200
+    output = response.json()
+    assert output["info"]["title"] == "Site Domain Manager"
+
+
+async def test_predict():
+    response = await client.post(
         "/benefits-claims-attributes/v1/",
         json={
             "claim_text": [
