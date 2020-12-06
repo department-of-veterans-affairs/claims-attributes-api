@@ -6,14 +6,14 @@ client = TestClient(app)
 
 
 def test_docs():
-    response = await client.get("/benefits-claims-attributes/v1/docs/openapi.json")
+    response = client.get("/benefits-claims-attributes/v1/docs/openapi.json")
     assert response.status_code == 200
     output = response.json()
-    assert output["info"]["title"] == "Site Domain Manager"
+    assert output["info"]["title"] == "Claims Attributes API"
 
 
-async def test_predict():
-    response = await client.post(
+def test_predict():
+    response = client.post(
         "/benefits-claims-attributes/v1/",
         json={
             "claim_text": [

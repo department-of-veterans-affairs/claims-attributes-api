@@ -104,9 +104,9 @@ CMD ["uvicorn", "--reload", "--host=0.0.0.0", "--port=8000", "main:app"]
 # More here: https://github.com/department-of-veterans-affairs/health-apis-deployer/blob/d2/docs/it.md
 ###############################################
 FROM development AS test
-COPY ./docker-test-entrypoint.sh /docker-test-entrypoint.sh
-RUN chmod +x /docker-test-entrypoint.sh
-ENTRYPOINT ["/docker-test-entrypoint.sh"]
+WORKDIR /app
+RUN chmod +x docker-test-entrypoint.sh
+ENTRYPOINT ["/app/docker-test-entrypoint.sh"]
 
 ###############################################
 # Production Image

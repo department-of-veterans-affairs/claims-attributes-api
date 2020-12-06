@@ -54,6 +54,7 @@ prepareForTests() {
 doSmokeTest() {
   prepareForTests
   echo "Running Smoke tests..."
+  poetry run "test"
   RETURN_STATUS=$?
   echo "Return status: $RETURN_STATUS"
   exit "$RETURN_STATUS"
@@ -63,14 +64,13 @@ doSmokeTest() {
 doRegressionTest() {
   prepareForTests
   echo "Running Regression tests..."
+  poetry run "test"
   RETURN_STATUS=$?
   echo "Return status: $RETURN_STATUS"
   exit "$RETURN_STATUS"
 }
 
-if [ "$#" -lt 1 ]; then
-  echo "No command specified"
-fi
+[ $# == 0 ] && usage "No command specified"
 echo "Num: $#, Args: $@ , arg0: $0"
 COMMAND=$1
 shift

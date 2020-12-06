@@ -6,9 +6,7 @@ def test():
     Run all unittests. Equivalent to:
     `poetry run python -u -m unittest discover`
     """
-    subprocess.run(
-        ['python', '-u', '-m', 'unittest', 'discover']
-    )
+    subprocess.run(["pyetest", "-sv"])
 
 
 def server():
@@ -17,5 +15,5 @@ def server():
     `poetry run python -u -m unittest discover`
     """
     subprocess.run(
-        ['poetry', 'run', 'uvicorn', 'claims_attributes.main:app', '--reload']
+        ["poetry", "run", "uvicorn", "claims_attributes.main:app", "--reload"]
     )
