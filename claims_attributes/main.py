@@ -94,7 +94,7 @@ async def healthcheck():
     return "App OK"
 
 
-@router.post(f"/", response_model=Prediction)
+@router.post("/", response_model=Prediction)
 def claims_attributes_API(claim_input: ClaimInput):
     """
     This takes an array of user's claimed disabilities (`claims_text`) and outputs a VA classification code and set of special attributes (`special issues` and `flashes`) for each.
@@ -109,4 +109,5 @@ def claims_attributes_API(claim_input: ClaimInput):
     return prediction
 
 
+# We prefix all of the above endpoints with the api prefix and version
 app.include_router(router, prefix=f"/{api_prefix}/{version}")

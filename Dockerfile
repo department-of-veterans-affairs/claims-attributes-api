@@ -106,7 +106,9 @@ CMD ["uvicorn", "--reload", "--host=0.0.0.0", "--port=8000", "main:app"]
 FROM development AS test
 WORKDIR /app
 RUN chmod +x docker-test-entrypoint.sh
-ENTRYPOINT ["/app/docker-test-entrypoint.sh"]
+# The docker entrypoint activates a virtualenv,
+# the test one then runs the tests with supplied arguments
+ENTRYPOINT ["/docker-entrypoint.sh", "/app/docker-test-entrypoint.sh"]
 
 ###############################################
 # Production Image

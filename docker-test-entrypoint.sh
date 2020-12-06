@@ -35,24 +35,8 @@ doTest() {
   [ $? != 0 ] && exit 1
 }
 
-prepareForTests() {
-  echo "Activating virtual environment..."
-
-  # if VENV_PATH has been set (e.g. on the server) use it,
-  # otherwise, ask poetry for it. Then activate our virtual environment
-  if  [ -z "$VENV_PATH" ]
-  then
-    echo "VENV_PATH not set, using poetry version"
-    source "$( poetry env info --path )/bin/activate"
-  else
-    echo "VENV_PATH set to $VENV_PATH, using it"
-    source "$VENV_PATH/bin/activate"
-  fi
-}
-
 # Runs Smoke Tests
 doSmokeTest() {
-  prepareForTests
   echo "Running Smoke tests..."
   poetry run "test"
   RETURN_STATUS=$?
@@ -62,7 +46,6 @@ doSmokeTest() {
 
 # Runs the Regression Test Suite
 doRegressionTest() {
-  prepareForTests
   echo "Running Regression tests..."
   poetry run "test"
   RETURN_STATUS=$?

@@ -12,6 +12,12 @@ def test_docs():
     assert output["info"]["title"] == "Claims Attributes API"
 
 
+def test_healthcheck():
+    response = client.get("/benefits-claims-attributes/v1/healthcheck")
+    assert response.status_code == 200
+    assert response.json() == "App OK"
+
+
 def test_predict():
     response = client.post(
         "/benefits-claims-attributes/v1/",
