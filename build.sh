@@ -2,9 +2,9 @@
 set -euo pipefail
 ECR_REGISTRY=533575416491.dkr.ecr.us-gov-west-1.amazonaws.com
 IMAGE_NAME=benefits-apis-claims-attributes
-TEST_IMAGE_NAME=$TEST_IMAGE-test
 DEPLOY_IMAGE=$ECR_REGISTRY/$IMAGE_NAME:$VERSION
-TEST_IMAGE=$ECR_REGISTRY/$IMAGE_NAME:$VERSION
+TEST_IMAGE_NAME=$IMAGE_NAME-test
+TEST_IMAGE=$ECR_REGISTRY/$TEST_IMAGE_NAME:$VERSION
 
 # We build two images, one for prod and one for testing, using --target / multi-stage builds 
 # as outlined here: https://suda.pl/single-dockerfile-for-testing-and-production/ . 
