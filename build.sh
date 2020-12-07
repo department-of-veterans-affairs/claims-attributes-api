@@ -11,7 +11,7 @@ TEST_IMAGE=$ECR_REGISTRY/$TEST_IMAGE_NAME:$VERSION
 # For more on our test image and its expectations, see: 
 # https://github.com/department-of-veterans-affairs/health-apis-deployer/blob/master/deployment-unit.md
 cp $SSL_CERT_FILE cacert.pem
-docker build --target "production" -t $IMAGE .
+docker build --target "production" -t $DEPLOY_IMAGE .
 docker build --target "test" -t $TEST_IMAGE .
 
 if [ $RELEASE == true ]
