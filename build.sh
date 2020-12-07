@@ -20,4 +20,4 @@ then
   docker push $IMAGE
   docker push $TEST_IMAGE
 fi
-docker rmi $IMAGE
+docker rmi $DEPLOY_IMAGE $TEST_IMAGE
