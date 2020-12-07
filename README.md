@@ -52,19 +52,27 @@ When you work with these files going forward they will appear to be their binary
 
 #### Run
 
-Run `poetry run server` to run the app. This uses a function in `scripts.py` defined in `pyproject.toml`. Under the hood, FastAPI uses the gunicorn ASGI server to serve content.
+Run `make local` to run the app locally.
+
+This installs a necessary certificate file, then uses a function in `scripts.py` defined in `pyproject.toml`. Under the hood, FastAPI uses the gunicorn ASGI server to serve content.
 
 ### Docker
 
 This project builds with Docker [multistage](https://docs.docker.com/develop/develop-images/multistage-build/) builds via the `Dockerfile`.
 
+_NOTE!_ All docker builds require you to use a `cacert.pem` file, to match the way certificates work on the build server, which self-signs. To generate this, you can run `make cert`. This command requires the python `certifi` [module](https://pypi.org/project/certifi/) to obtain Mozilla's root certificates and copy this when running locally - `poetry install` installs this dependency for you. Note also that over time these need to be updated - to do this you'll need to remove `cacert.pem` and re-run `make cert`, if you get any `SSL` errors when building.
+
 #### Build
 
-```sh
-docker build -t api .
-```
+There are three different docker flavors available, depending on what you want to do: `dev`, `prod`, and `test`.
+
+1. `dev` : for local development using docker. To build and run, run `make docker-dev`. Will continue running until you quit it.
+2. `prod` : for building and running a version of the app optimized for production. This build will be run on the build server. To build and run, run `make docker-prod`. Will continue running until you quit it.
+3. `test` : for building and running a version of the test container with an entrypoint for testing that is used by our build server/deployer as part of blue/green deployment. See more [here](https://github.com/department-of-veterans-affairs/health-apis-deployer/blob/qa/deployment-unit.md).
 
 #### Run
+
+The above `Makefile` commands will both run and test. See the Makefile for instructions, but you'll need to expose a port as in the below:
 
 ```sh
 docker run --name api -p 8000:80 api:latest
@@ -79,8 +87,8 @@ VA corporate CI jobs run on Jenkins, with a build agent built with its own Docke
 Standard Shell build:
 
 1. Builds our `Dockerfile.build` agent image
-2. Runs `build.sh` on it, which builds our image via the `Dockerfile`
-3. Deploys the image to ECR
+2. Runs `build.sh` on it, which builds our image, plus its test image, via the `Dockerfile`
+3. Deploys both the image and test image to ECR.
 
 See more about this setup [here (Private Repo)](https://github.com/department-of-veterans-affairs/health-apis-devops/tree/master/ci).
 
