@@ -17,7 +17,7 @@ docker build --target "test" -t $TEST_IMAGE .
 if [ $RELEASE == true ]
 then
   aws ecr get-login-password --region us-gov-west-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
-  docker push $IMAGE
+  docker push $DEPLOY_IMAGE
   docker push $TEST_IMAGE
 fi
 docker rmi $DEPLOY_IMAGE $TEST_IMAGE
