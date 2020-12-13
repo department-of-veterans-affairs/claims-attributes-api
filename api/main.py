@@ -16,6 +16,9 @@ from pathlib import Path
 # All API calls have this prefix in order to avoid Load Balancer conflicts
 api_prefix = "benefits-claims-attributes"
 version = "v1"
+router = APIRouter()
+# We prefix all endpoints with the api prefix and version
+app.include_router(router, prefix=f"/{api_prefix}/{version}")
 
 
 def custom_openapi():
@@ -37,77 +40,32 @@ app = FastAPI(
 )
 app.openapi = custom_openapi
 
-router = APIRouter()
-
-# It is necessary to use this to get the path of the current file
-file_name = inspect.getframeinfo(inspect.currentframe()).filename
-curr_path = os.path.dirname(os.path.abspath(file_name))
-
-print("Initializing vectorizer...")
-vectorizer = joblib.load(os.path.join(curr_path, "data/vectorizer.pkl"))
-
-print("Initializing model...")
-model = joblib.load(os.path.join(curr_path, "data/LRclf.pkl"))
-
-print("Initializing classification codes and labels...")
-classes = {}
-with open(os.path.join(curr_path, "data/classification_text.csv"), mode="r") as infile:
-    dict_reader = csv.DictReader(infile)
-    classes = {i["label"].lower().strip(): i["id"] for i in dict_reader}
-print("codes and labels loaded")
-
-
-def predict(
-    input_text: List[str] = ["Hello world"],
-    vectorizer: CountVectorizer = None,
-    model: LogisticRegression = None,  # TO-DO: replace model
-    classes: List[str] = [],
-    *args,
-    **kwargs,
-):
-    assert vectorizer is not None
-    assert model is not None
-    vectored_text = csr_matrix(vectorizer.transform(input_text).toarray().tolist())
-    predictions = model.predict(vectored_text)
-    confidence = str(int(model.predict_proba(vectored_text).max() * 100))
-    contentions = []
-    for i, prediction in enumerate(predictions):
-        prediction = prediction.lower().strip()
-        classification = Classification(
-            text=prediction, code=classes[prediction], confidence=confidence
-        )
-        flashes = get_flashes(input_text[i])
-        special_issues = get_special_issues(input_text[i])
-
-        contention = Contention(
-            originalText=input_text[i],
-            classification=classification,
-            flashes=flashes,
-            specialIssues=special_issues,
-        )
-        contentions.append(contention)
-    return contentions
-
+class Predictor:
+    async def predict(self, input_text: List[str] = ["Hello world"]):
+        contentions = []
+        classified_text = await requests.post("classifier", data=input_text)
+        special_issues = await requests.post("special_issues", data=input_text)
+        flashes = await requests.post("flashes", data=input_text)
+        
+        for (input_text, classified, special_issues, flashes) in zip(input_text, classification, special_issues, flashes):
+            contention = Contention(
+                originalText=input_text,
+                classification=classification,
+                specialIssues=special_issues,
+                flashes=flashes,
+            )
+            contentions.append(contention)
+        return Prediction(contentions=contentions)
 
 @router.get("/healthcheck", status_code=200)
 async def healthcheck():
     return "App OK"
 
-
 @router.post("/", response_model=Prediction)
-def claims_attributes_API(claim_input: ClaimInput):
+async def get_prediction(claim_input: ClaimInput):
     """
     This takes an array of user's claimed disabilities (`claims_text`) and outputs a VA classification code and set of special attributes (`special issues` and `flashes`) for each.
     """
-    contentions = predict(
-        input_text=claim_input.claim_text,
-        vectorizer=vectorizer,
-        model=model,
-        classes=classes,
-    )
-    prediction = Prediction(contentions=contentions)
+    predictor = Predictor()
+    prediction = predictor.predict(input_text=claim_input.claim_text)
     return prediction
-
-
-# We prefix all of the above endpoints with the api prefix and version
-app.include_router(router, prefix=f"/{api_prefix}/{version}")
