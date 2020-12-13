@@ -17,5 +17,6 @@
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.pythonPath": "/Users/nhillard/.pyenv/versions/3.8.6/bin/python3.8"
 }
