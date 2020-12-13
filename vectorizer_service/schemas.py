@@ -1,3 +1,5 @@
+from pydantic import BaseModel
+
 class VectorizerOutput(BaseModel):
     """
     Vectorized Text
