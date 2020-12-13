@@ -1,5 +1,7 @@
 from fastapi import FastAPI, APIRouter
+from fastapi.openapi.utils import get_openapi
 from .routers import healthcheck, predict
+from pathlib import Path
 
 # All API calls have this prefix in order to avoid Load Balancer conflicts
 api_prefix = "benefits-claims-attributes"
@@ -7,8 +9,9 @@ version = "v1"
 
 app = FastAPI(
     docs_url=f"/{api_prefix}/{version}/docs",
-    openapi_url=f"/{api_prefix}/{version}/docs/openapi.json"
+    openapi_url=f"/{api_prefix}/{version}/docs/openapi.json",
 )
+
 
 def custom_openapi():
     if app.openapi_schema:
@@ -21,6 +24,7 @@ def custom_openapi():
     )
     app.openapi_schema = openapi_schema
     return app.openapi_schema
+
 
 global_router = APIRouter()
 global_router.include_router(healthcheck.router)

@@ -10,7 +10,7 @@
             "request": "launch",
             "module": "uvicorn",
             "args": [
-                "claims_attributes.main:app",
+                "api.main:app",
                 "--reload"
             ]
         }
