@@ -1,5 +1,5 @@
 from caapi_shared.utils as utils
-from caapi_shared.schemas import Flash
+from caapi_shared.schemas as schemas
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -42,8 +42,8 @@ class SpecialIssuesClassifier:
             })
         return match_results
 
-@app.get("/")
-def get_flashes(claim_input: ClaimInput) -> [Flash]:
+@app.get("/", response_model=List[schemas.Flash])
+def get_flashes(claim_input: schemas.ClaimInput):
     classifier = FlashesClassifier()
     flash_list = []
     for claim_text in claim_input.claim_text:
