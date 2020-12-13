@@ -1,66 +1,44 @@
-from caapi_shared.utils import clean_text, find_similar
+import caapi_shared.utils as utils
 from caapi_shared.schemas import SpecialIssue
 from fastapi import FastAPI
+import json
+from pathlib import Path
 
 app = FastAPI()
 
-spi = {
-    "als": "ALS",
-    "amyotrophic lateral sclerosis": "ALS",
-    "agent orange": "AOOV",
-    "ao": "AOOV",
-    "herbicide": "AOOV",
-    "asbestos": "ASB",
-    "asbestosis": "ASB",
-    "gulf war": "GW",
-    "burn pits": "GW",
-    "hepatitis c": "HEPC",
-    "hep c": "HEPC",
-    "hepatitus c": "HEPC",
-    "hiv": "HIV",
-    "mustard": "MG",
-    "mst": "MST",
-    "sexual trauma": "MST",
-    "sexual assault": "MST",
-    "prisoner": "POW",
-    "pow": "POW",
-    "ptsd": "PTSD/1",
-    "post traumatic stress": "PTSD/1",
-    "p t s d": "PTSD/1",
-    "posttraumatic stress": "PTSD/1",
-    "postraumatic stress": "PTSD/1",
-    "pts": "PTSD/1",
-    "shell shock": "PTSD/1",
-    "stress post traumatic": "PTSD/1",
-    "stress disorder": "PTSD/1",
-    "personal trauma": "PTSD/3",
-    "acquired psychiatric": "PTSD/3",
-    "radiation": "RDN",
-    "sarcoidosis": "SARCO",
-    "tbi": "TBI",
-    "t b i": "TBI",
-    "traumatic brain injury": "TBI",
-    "c 123": "C123",
-    "c123": "C123",
-}
+class SpecialIssuesClassifier:
+    def __init__(self):
+        self.si_map = json.load(Path("special_issues.json").read_text())
+    
+    def check_list(self, claim_text):
+        identified_issues = set()
+        for issue in self.si_map.keys():
+            if issue in claim_text:
+                identified_issues.add(self.si_map[issue])
+        if ("AOOV" in issues) and ("vietnam" in x):
+            identified_issues.append("AOIV")
+            identified_issues.remove("AOOV")
+        if ("PTSD/1" in issues) and ("non combat" in x):
+            identified_issues.append("PTSD/2")
+            identified_issues.remove("PTSD/1")
+        return identified_issues
+    
+    def classify(self, claim_text):
+        cleaned_text = utils.clean_text(text)
+        list_matches = self.check_list(cleaned_text)
+        spelling_matches = utils.find_similar(cleaned_text, self.si_map)
+        matches = list_matches + spelling_matches
+        match_results = []
+        for match in matches:
+            match_results.append({
+                "text": match
+            })
+        return match_results
 
-
-def find_special_issues(x: str):
+@app.get("/", response_model=SpecialIssueResponse)
+def get_special_issues(claim_input: ClaimInput) -> [SpecialIssue]:
+    classifier = SpecialIssuesClassifier()
     issues = []
-    for fl in spi.keys():
-        if (fl in x) and (spi[fl] not in issues):
-            issues.append(spi[fl])
-    if ("AOOV" in issues) and ("vietnam" in x):
-        issues.append("AOIV")
-        issues.remove("AOOV")
-    if ("PTSD/1" in issues) and ("non combat" in x):
-        issues.append("PTSD/2")
-        issues.remove("PTSD/1")
+    for claim_text in claim_input.claim_text:
+        issues.append(classifier.classify(claim_text))
     return issues
-
-@app.get("/")
-def get_special_issues(text: str) -> [SpecialIssue]:
-    special_issues = find_special_issues(clean_text(text)) + find_similar(
-        clean_text(text), spi
-    )
-    return [{"text": special_issue} for special_issue in special_issues]
