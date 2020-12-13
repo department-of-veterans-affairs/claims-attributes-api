@@ -3,7 +3,7 @@ from pathlib import Path
 from caapi_shared.schemas import ClaimInput, Classification, Contention, Prediction
 from typing import List
 
-router = APIRouter(docs_url="/", openapi_url="/")
+router = APIRouter()
 
 class Predictor:
     async def predict(self, input_text: List[str] = ["Hello world"]):
