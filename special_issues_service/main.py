@@ -1,8 +1,9 @@
 import caapi_shared.utils as utils
-from caapi_shared.schemas import SpecialIssue
+from caapi_shared.schemas as schemas
 from fastapi import FastAPI
 import json
 from pathlib import Path
+from typing import List
 
 app = FastAPI()
 
@@ -35,10 +36,10 @@ class SpecialIssuesClassifier:
             })
         return match_results
 
-@app.get("/", response_model=SpecialIssueResponse)
-def get_special_issues(claim_input: ClaimInput) -> [SpecialIssue]:
+@app.get("/", response_model=List[schemas.SpecialIssue])
+def get_special_issues(claim_input: schemas.ClaimInput):
     classifier = SpecialIssuesClassifier()
-    issues = []
+    issue_list = []
     for claim_text in claim_input.claim_text:
-        issues.append(classifier.classify(claim_text))
-    return issues
+        issue_list.append(classifier.classify(claim_text))
+    return issue_list
