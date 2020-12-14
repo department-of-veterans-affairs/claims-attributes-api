@@ -25,10 +25,10 @@ local-build:
 	$(POETRY) install
 
 local-run: local-build
-	$(POETRY) run server
+	$(POETRY) run uvicorn claims_attributes.main:app --reload
 
 local-test:
-	$(POETRY) run test
+	$(POETRY) run pytest -sv
 
 docker-dev: cert
 	$(DOCKER) build --target development -t api:dev .
