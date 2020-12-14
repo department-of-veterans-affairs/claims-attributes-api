@@ -3,15 +3,14 @@ name = "api"
 version = "1.0.0"
 description = "API for the Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
-packages = [
-    { include = "../caapi_shared"},
-]
 
 [tool.poetry.dependencies]
 python = "^3.8"
 fastapi = "^0.62.0"
 pydantic = "^1.7.3"
 requests = "^2.25.0"
+caapi-shared = {path = "../shared"}
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"

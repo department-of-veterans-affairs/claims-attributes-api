@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "caapi_shared"
+name = "caapi-shared"
 version = "1.0.0"
 description = ""
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
@@ -7,7 +7,6 @@ authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "^1.7.3"
-typing = "^3.7.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
