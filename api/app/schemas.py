@@ -10,14 +10,16 @@ class ClaimInput(BaseModel):
     claim_text: List[str] = Field(
         None,
         description="""
-        An array of strings representing claimed disabilities. These will be classified on a per-disability basis in the output.
+        An array of strings representing claimed disabilities. 
+        These will be classified on a per-disability basis in the output.
         """,
     )
 
 
 class Classification(BaseModel):
     """
-    Attributes that correspond to the VA classification code for this claimed disability.
+    Attributes that correspond to the
+    VA classification code for this claimed disability.
     """
 
     text: str = Field(
@@ -62,7 +64,8 @@ class Contention(BaseModel):
     )
     specialIssues: List[SpecialIssue] = Field(
         None,
-        description="A list of special issues that may apply based on the disabilities claimed",
+        description="""A list of special issues 
+        that may apply based on the disabilities claimed""",
     )
 
 
@@ -73,5 +76,6 @@ class Prediction(BaseModel):
 
     contentions: List[Contention] = Field(
         None,
-        description="""Lists all inputted claimed disabilities and related data for each""",
+        description="""Lists all inputted claimed 
+        disabilities and related data for each""",
     )

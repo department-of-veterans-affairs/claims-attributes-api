@@ -1,5 +1,5 @@
 from pydantic import BaseSettings
-from pathlib import Path
+from importlib_resources import files
 
 
 class Settings(BaseSettings):
@@ -9,4 +9,5 @@ class Settings(BaseSettings):
     SPECIAL_ISSUES_URI: str
 
 
-settings = Settings(_env_file=Path("api/dev.env"))
+settings_file = files("app").joinpath("dev.env")
+settings = Settings(_env_file=settings_file)

@@ -1,8 +1,9 @@
 from fastapi import APIRouter
-from caapi_shared.schemas import ClaimInput, Contention, Prediction
 from typing import List
 import requests
+from ..schemas import ClaimInput, Contention, Prediction
 from ..settings import settings
+
 
 router = APIRouter()
 
