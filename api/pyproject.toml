@@ -3,6 +3,9 @@ name = "api"
 version = "1.0.0"
 description = "API for the Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
+packages = [
+    { include = "../caapi_shared"},
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
