@@ -85,6 +85,8 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 # Copying in our entrypoint
 COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
+COPY ./start-reload.sh /start-reload.sh
+RUN chmod +x /start-reload.sh
 
 # venv already has runtime deps installed we get a quicker install
 WORKDIR $PYSETUP_PATH
@@ -95,7 +97,7 @@ COPY . .
 
 EXPOSE 8000
 ENTRYPOINT /docker-entrypoint.sh $0 $@
-CMD ["uvicorn", "--reload", "--host=0.0.0.0", "--port=8000", "main:app"]
+CMD ["start-reload.sh"]
 
 ###############################################
 # Test Image
@@ -122,16 +124,20 @@ ENV FASTAPI_ENV=production
 # Copying our virtualenv
 COPY --from=builder-base $VENV_PATH $VENV_PATH
 
-# Copying in our entrypoint and configs
+# Copying in our entrypoint, start files, and configs
+COPY ./start.sh /start.sh
+RUN chmod +x /start.sh
 COPY gunicorn_conf.py /gunicorn_conf.py
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-COPY claims_attributes /app/claims_attributes
+# By default we copy just the fake app. 
+# Your app will need to copy its own files, e.g. COPY api /app/api
+COPY app /app/app
 
 # Entrypoint will run the below command as part of its run
 WORKDIR /app
 EXPOSE 80
 ENTRYPOINT /docker-entrypoint.sh $0 $@
-CMD [ "gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py",  "claims_attributes.main:app"]
+CMD ["/start.sh"]
