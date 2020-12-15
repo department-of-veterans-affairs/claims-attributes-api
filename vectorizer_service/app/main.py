@@ -1,9 +1,10 @@
+from typing import List
+
 import joblib
-from .schemas import VectorizerOutput
-from scipy.sparse.csr import csr_matrix
 from fastapi import FastAPI
 from importlib_resources import files
-from typing import List
+
+from .schemas import VectorizerOutput
 
 app = FastAPI()
 vectorizer = None
@@ -20,4 +21,4 @@ def startup_event():
 @app.post("/", response_model=VectorizerOutput)
 def vectorize(text: List[str]):
     vectorized_text = vectorizer.transform(text).toarray().tolist()
-    return {"vectorized_text": vectorized_text}
+    return VectorizerOutput(vectorized_text=vectorized_text)
