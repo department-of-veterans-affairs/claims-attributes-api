@@ -1,44 +1,27 @@
 version: "3"
 
 services:
-  api:
-    container_name: claimsAttributesAPIContainer
-    restart: always
-    build: ./api
-    env_file:
-      - api_variables.env
-    ports:
-      - "8000:8000"
-    command: gunicorn -w 1 -b :8000 api:APP
-
-  vectorizer:
-    container_name: vectorizerContainer
-    restart: always
-    build: ./vectorizer_service
-    ports:
-      - "8001:8001"
-    command: gunicorn -w 1 -b :8001 vectorizer:APP
 
   classifier:
     container_name: classifierContainer
     restart: always
-    build: ./classifier_service
+    build: ../src/classifier_service
     ports:
-      - "8002:8002"
-    command: gunicorn -w 1 -b :8002 classifier:APP
+      - "8001:8001"
+    command: gunicorn -k "uvicorn.workers.UvicornWorker" -b :8001 app.main:app
 
   flashes:
     container_name: flashesContainer
     restart: always
-    build: ./flashes_service
+    build: ../src/flashes_service
     ports:
-      - "8003:8003"
-    command: gunicorn -w 1 -b :8003 flashes:APP
+      - "8002:8002"
+    command: gunicorn -k "uvicorn.workers.UvicornWorker" -b :8002 app.main:app
   
   specialissues:
     container_name: specialIssuesContainer
     restart: always
-    build: ./special_issues_service
+    build: ../src/special_issues_service
     ports:
-      - "8004:8004"
-    command: gunicorn -w 1 -b :8004 special_issues:APP
+      - "8003:8003"
+    command: gunicorn -k "uvicorn.workers.UvicornWorker" -b :8003 app.main:app
