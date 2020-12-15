@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/Users/nhillard/Library/Caches/pypoetry/virtualenvs/classifier-service-3Nynf3gI-py3.8/bin/python3.8",
-    "python.linting.pylintPath": "venv/bin/pylint",
+    "python.pythonPath": "${workspaceFolder}/.venv/bin/python",
+    "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint",
     "python.formatting.provider": "black"
 }
