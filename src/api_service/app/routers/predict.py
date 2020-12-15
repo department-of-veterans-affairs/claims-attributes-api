@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 import requests
-from app.schemas import ClaimInput, Contention, Prediction
+from caapi_shared.schemas import ClaimInput, Contention, Prediction
 from app.settings import settings
 
 
@@ -9,18 +9,21 @@ router = APIRouter()
 
 
 class Predictor:
-    async def predict(self, input_text: List[str] = ["Hello world"]):
+    async def predict(self, claim_input: ClaimInput):
         contentions = []
         classification_list = await requests.post(
-            settings.CLASSIFIER_URI, data=input_text
+            settings.CLASSIFIER_URI, data=claim_input
         )
         special_issues_list = await requests.post(
-            settings.SPECIAL_ISSUES_URI, data=input_text
+            settings.SPECIAL_ISSUES_URI, data=claim_input
         )
-        flashes_list = await requests.post(settings.FLASHES_URI, data=input_text)
+        flashes_list = await requests.post(settings.FLASHES_URI, data=claim_input)
 
         for (input_text, classification, special_issues, flashes) in zip(
-            input_text, classification_list, special_issues_list, flashes_list
+            claim_input.claim_text,
+            classification_list,
+            special_issues_list,
+            flashes_list,
         ):
             contention = Contention(
                 originalText=input_text,
@@ -40,5 +43,5 @@ async def get_prediction(claim_input: ClaimInput):
     (`special issues` and `flashes`) for each.
     """
     predictor = Predictor()
-    prediction = await predictor.predict(input_text=claim_input.claim_text)
+    prediction = await predictor.predict(claim_input=claim_input)
     return prediction
