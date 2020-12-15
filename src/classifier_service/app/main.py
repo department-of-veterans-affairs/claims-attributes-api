@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import List, Dict
 
 import joblib
-import requests
 from fastapi import FastAPI
 from importlib_resources import files
 from scipy.sparse.csr import csr_matrix
