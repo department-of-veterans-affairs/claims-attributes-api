@@ -1,22 +1,20 @@
 [tool.poetry]
-name = "vectorizer_service"
+name = "classifier_service"
 version = "1.0.0"
-description = "Vectorizer for claims text. Part of the Claims Attributes API"
+description = "Classifier Service for Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-scipy = "^1.5.4"
-pydantic = "^1.7.3"
-fastapi = "^0.62.0"
-joblib = "^0.17.0"
-importlib-resources = "^3.3.0"
 scikit-learn = "^0.23.2"
+joblib = "^1.0.0"
+fastapi = "^0.62.0"
 uvicorn = {extras = ["standard"], version = "^0.13.1"}
+requests = "^2.25.0"
+importlib-resources = "^3.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
-ipython = "^7.19.0"
 black = "^20.8b1"
 
 [build-system]
