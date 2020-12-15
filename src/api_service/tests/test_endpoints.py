@@ -4,7 +4,6 @@ import pytest
 
 client = TestClient(app)
 
-
 def test_docs():
     response = client.get("/benefits-claims-attributes/v1/docs/openapi.json")
     assert response.status_code == 200
@@ -16,4 +15,3 @@ def test_healthcheck():
     response = client.get("/benefits-claims-attributes/v1/healthcheck")
     assert response.status_code == 200
     assert response.json() == "App OK"
-
