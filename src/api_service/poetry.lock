@@ -66,18 +66,13 @@ d = ["aiohttp (>=3.3.2)", "aiohttp-cors"]
 [[package]]
 name = "caapi-shared"
 version = "1.0.0"
-description = "Shared library for all services that are part of the VA-administered Claims Attributes API"
+description = ""
 category = "main"
 optional = false
-python-versions = "^3.8"
-develop = true
+python-versions = ">=3.8,<4.0"
 
 [package.dependencies]
-pydantic = "^1.7.3"
-
-[package.source]
-type = "directory"
-url = "../shared"
+pydantic = ">=1.7.3,<2.0.0"
 
 [[package]]
 name = "certifi"
@@ -505,7 +500,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "7e643d2e994359296905a6356bf409cbabaf301f2a6e7f00da5fdd0ae25c5282"
+content-hash = "5a07c6c287d89ab2996818c39640af938ce3eb391016e34e37196857b1d8bd01"
 
 [metadata.files]
 appdirs = [
@@ -527,7 +522,10 @@ attrs = [
 black = [
     {file = "black-20.8b1.tar.gz", hash = "sha256:1c02557aa099101b9d21496f8a914e9ed2222ef70336404eeeac8edba836fbea"},
 ]
-caapi-shared = []
+caapi-shared = [
+    {file = "caapi-shared-1.0.0.tar.gz", hash = "sha256:00246df4cdfdad75266dc7c9c3ffb88ebe98ece54aac1cb0170402febd1b705c"},
+    {file = "caapi_shared-1.0.0-py3-none-any.whl", hash = "sha256:d77daa86da64de15375d5ff9eaf1f65410c833bebe0b954bb91f4fadd02e162d"},
+]
 certifi = [
     {file = "certifi-2020.12.5-py2.py3-none-any.whl", hash = "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"},
     {file = "certifi-2020.12.5.tar.gz", hash = "sha256:1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c"},
