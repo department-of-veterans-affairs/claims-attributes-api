@@ -10,7 +10,7 @@
             "request": "launch",
             "module": "uvicorn",
             "args": [
-                "vectorizer_service.app.main:app",
+                "app.main:app",
                 "--reload"
             ]
         }

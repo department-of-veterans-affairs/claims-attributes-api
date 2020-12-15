@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "flashes_servier"
+name = "flashes_service"
 version = "1.0.0"
-description = "Flashes Service, pat of the Claims Attributes API"
+description = "Flashes Service, part of the Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
 
 [tool.poetry.dependencies]
