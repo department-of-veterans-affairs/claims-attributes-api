@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "caapi-shared"
 version = "1.0.0"
-description = ""
+description = "Shared library for all services that are part of the VA-administered Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
 
 [tool.poetry.dependencies]
