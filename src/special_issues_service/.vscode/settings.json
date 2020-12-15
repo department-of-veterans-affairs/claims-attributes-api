@@ -1,4 +1,5 @@
 {
-    "python.pythonPath": "/Users/nhillard/Library/Caches/pypoetry/virtualenvs/special-issues-service-Z48QiUtn-py3.8/bin/python3.8",
+    "python.pythonPath": "/Users/nhillard/Library/Caches/pypoetry/virtualenvs/special-issues-service-GZtGCrM6-py3.8/bin/python3.8",
+    "python.linting.pylintPath": "venv/bin/pylint",
     "python.formatting.provider": "black"
 }

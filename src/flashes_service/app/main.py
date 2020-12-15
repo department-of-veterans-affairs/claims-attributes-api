@@ -5,8 +5,8 @@ from typing import List
 from fastapi import FastAPI
 from importlib_resources import files
 
-from . import utils
-from .schemas import Flash
+from caapi_shared import utils
+from caapi_shared.schemas import Flash, ClaimInput, FlashesServiceOutput
 
 app = FastAPI()
 
@@ -57,7 +57,10 @@ class FlashesClassifier:
         return match_results
 
 
-@app.post("/", response_model=List[List[Flash]])
-def get_flashes(claim_text_list: List[str]):
+@app.post("/", response_model=FlashesServiceOutput)
+def get_flashes(claim_input: ClaimInput):
     classifier = FlashesClassifier()
-    return [classifier.classify(claim_text) for claim_text in claim_text_list]
+    flashes_list = [
+        classifier.classify(claim_text) for claim_text in claim_input.claim_text
+    ]
+    return FlashesServiceOutput(flashes=flashes_list)

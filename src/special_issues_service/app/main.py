@@ -5,8 +5,8 @@ from typing import List
 from fastapi import FastAPI
 from importlib_resources import files
 
-from . import utils
-from .schemas import SpecialIssue
+from caapi_shared import utils
+from caapi_shared.schemas import SpecialIssue, ClaimInput, SpecialIssueServiceOutput
 
 app = FastAPI()
 
@@ -41,7 +41,10 @@ class SpecialIssuesClassifier:
         return match_results
 
 
-@app.post("/", response_model=List[List[SpecialIssue]])
-def get_special_issues(claim_text_list: List[str]):
+@app.post("/", response_model=SpecialIssueServiceOutput)
+def get_special_issues(claim_input: ClaimInput):
     classifier = SpecialIssuesClassifier()
-    return [classifier.classify(claim_text) for claim_text in claim_text_list]
+    special_issues_list = [
+        classifier.classify(claim_text) for claim_text in claim_input.claim_text
+    ]
+    return SpecialIssueServiceOutput(special_issues=special_issues_list)

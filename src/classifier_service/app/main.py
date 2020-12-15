@@ -9,7 +9,7 @@ from scipy.sparse.csr import csr_matrix
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 
-from .schemas import Classification, ClaimInput
+from caapi_shared.schemas import Classification, ClaimInput, ClassifierServiceOutput
 
 app = FastAPI()
 classifier = None
@@ -61,6 +61,7 @@ class DisabilityClassifier:
         return classification
 
 
-@app.post("/", response_model=List[Classification])
+@app.post("/", response_model=ClassifierServiceOutput)
 async def classify(claim_input: ClaimInput):
-    return [classifier.classify(text) for text in claim_input.claim_text]
+    classifications = [classifier.classify(text) for text in claim_input.claim_text]
+    return ClassifierServiceOutput(classifications = classifications)

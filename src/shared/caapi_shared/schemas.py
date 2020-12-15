@@ -75,3 +75,34 @@ class Prediction(BaseModel):
         None,
         description="""Lists all inputted claimed disabilities and related data for each""",
     )
+
+class SpecialIssueServiceOutput(BaseModel):
+    """
+    Represents the output of a call to the Special Issue Service
+    """
+
+    special_issues: List[List[SpecialIssue]] = Field(
+        None,
+        description="""A list of special issues that may apply based on the disabilities claimed""",
+    )
+
+class FlashesServiceOutput(BaseModel):
+    """
+    Represents the output of a call to the Flashes Service
+    """
+
+    flashes: List[List[SpecialIssue]] = Field(
+        None,
+        description="""A list of flashes that may apply based on the disabilities claimed""",
+    )
+
+class ClassifierServiceOutput(BaseModel):
+    """
+    Represents the output of a call to the Classifier Service
+    """
+
+    classifications: List[Classification] = Field(
+        None,
+        description="""A list of classifications that may apply based on the disabilities claimed""",
+    )
+

@@ -3,6 +3,9 @@ name = "special_issues_service"
 version = "1.0.0"
 description = "Special Issues Service, part of the Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
+packages = [
+    {include = "app"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -10,7 +13,7 @@ fastapi = "^0.62.0"
 pydantic = "^1.7.3"
 uvicorn = {extras = ["standard"], version = "^0.13.1"}
 importlib-resources = "^3.3.0"
-
+caapi_shared = {path="../shared"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
