@@ -2,11 +2,11 @@ ARG VERSION
 
 FROM vasdvp/health-apis-centos:8
 
-COPY shared/install-git-centos8 /install-git
-COPY shared/install-docker-centos8 /install-docker
-COPY shared/install-awscli /install-awscli
-COPY shared/combine-ca-certs /combine-ca-certs
-COPY shared/retry /usr/local/bin/retry
+COPY dockerfile_shared/install-git-centos8 /install-git
+COPY dockerfile_shared/install-docker-centos8 /install-docker
+COPY dockerfile_shared/install-awscli /install-awscli
+COPY dockerfile_shared/combine-ca-certs /combine-ca-certs
+COPY dockerfile_shared/retry /usr/local/bin/retry
 
 #
 # Install Git, awscli and Docker
@@ -22,5 +22,5 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.r
 
 # Install certs
 ENV SSL_CERT_FILE=$ADDITIONAL_CA_CERTS/cacert.pem
-COPY shared/combine-ca-certs /combine-ca-serts
+COPY dockerfile_shared/combine-ca-certs /combine-ca-serts
 RUN /combine-ca-certs $SSL_CERT_FILE

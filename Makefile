@@ -12,12 +12,16 @@ all:
 docker-all: docker-dev docker-prod docker-test
 
 # We need to generate a local cert file to match the server's setup
-cert: $(CERT_FILE) local-build
+cert: $(CERT_FILE)
 
 $(CERT_FILE):
 	@echo "Copying cert file from python certifi module : $(CERT_FILE)"
 	$(eval CERT_FILE_ORIGIN := $(shell python -m certifi))
 	cp $(CERT_FILE_ORIGIN) $(CERT_FILE)
+	cp $(CERT_FILE) ./src/api_service/
+	cp $(CERT_FILE) ./src/classifier_service/
+	cp $(CERT_FILE) ./src/flashes_service/
+	cp $(CERT_FILE) ./src/special_issues_service/
 
 local: cert local-build local-run
 
