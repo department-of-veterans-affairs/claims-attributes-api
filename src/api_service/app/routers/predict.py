@@ -20,15 +20,15 @@ class Predictor:
     async def predict(self, claim_input: ClaimInput):
         contentions = []
         classifications = self.safe_get(
-            settings.CLASSIFIER_URI, claim_input.json(), ClassifierServiceOutput
+            settings.classifier_uri, claim_input.json(), ClassifierServiceOutput
         ).classifications
 
         special_issues = self.safe_get(
-            settings.SPECIAL_ISSUES_URI, claim_input.json(), SpecialIssueServiceOutput
+            settings.special_issues_uri, claim_input.json(), SpecialIssueServiceOutput
         ).special_issues
 
         flashes = self.safe_get(
-            settings.FLASHES_URI, claim_input.json(), FlashesServiceOutput
+            settings.flashes_uri, claim_input.json(), FlashesServiceOutput
         ).flashes
 
         for (input_text, classification, special_issues, flashes) in zip(

@@ -1,12 +1,13 @@
 from pydantic import BaseSettings
 from importlib_resources import files
-
+import os
 
 class Settings(BaseSettings):
-    CLASSIFIER_URI: str
-    FLASHES_URI: str
-    SPECIAL_ISSUES_URI: str
+    classifier_uri: str
+    flashes_uri: str
+    special_issues_uri: str
 
+    class Config:
+        env_file = files("app").joinpath("local.env")
 
-settings_file = files("app").joinpath("local.env")
-settings = Settings(_env_file=settings_file)
+settings = Settings()
