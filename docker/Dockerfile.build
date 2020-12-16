@@ -2,11 +2,11 @@ ARG VERSION
 
 FROM vasdvp/health-apis-centos:8
 
-ADD shared/install-git-centos8 /install-git
-ADD shared/install-docker-centos8 /install-docker
-ADD shared/install-awscli /install-awscli
-ADD shared/combine-ca-certs /combine-ca-certs
-ADD shared/retry /usr/local/bin/retry
+COPY shared/install-git-centos8 /install-git
+COPY shared/install-docker-centos8 /install-docker
+COPY shared/install-awscli /install-awscli
+COPY shared/combine-ca-certs /combine-ca-certs
+COPY shared/retry /usr/local/bin/retry
 
 #
 # Install Git, awscli and Docker
