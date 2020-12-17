@@ -41,4 +41,4 @@ fi
 
 echo "Removing images..."
 docker rmi $BASE_APPLICATION_IMAGE_BUILDER $BASE_APPLICATION_IMAGE_PRODUCTION $BASE_APPLICATION_IMAGE_TEST 
-docker-compose rm -f
+docker-compose down
