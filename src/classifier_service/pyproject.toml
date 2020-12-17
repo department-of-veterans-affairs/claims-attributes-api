@@ -3,9 +3,6 @@ name = "classifier_service"
 version = "1.0.0"
 description = "Classifier Service for Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
-packages = [
-    {include = "app"}
-]
 
 [tool.poetry.dependencies]
 python = "^3.8"

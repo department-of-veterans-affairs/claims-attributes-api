@@ -8,11 +8,6 @@ cp $SSL_CERT_FILE ./docker/$BASE_APPLICATION_IMAGE
 docker build --target "production" -t $BASE_APPLICATION_IMAGE:production ./docker/$BASE_APPLICATION_IMAGE
 docker build --target "test" -t $BASE_APPLICATION_IMAGE:test ./docker/$BASE_APPLICATION_IMAGE
 
-# We must copy the CACERT file into all service dirs to be picked up by each dockerfile
-for SERVICE in api classifier flashes special_issues
-do 
-  cp $SSL_CERT_FILE ./src/"$SERVICE"_service/
-done
 docker-compose build
 
 if [ $RELEASE == true ]
@@ -21,7 +16,7 @@ then
 
   # Our API image is just named for the service itself
   docker push $ECR_REGISTRY/$COMMON_PREFIX:$VERSION
-  for SERVICE in classifier flashes special_issues
+  for SERVICE in classifier flashes special-issues
   do
     docker push "$ECR_REGISTRY/$COMMON_PREFIX-$SERVICE-service:$VERSION"
   done

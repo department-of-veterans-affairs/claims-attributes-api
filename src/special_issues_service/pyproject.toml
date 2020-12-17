@@ -3,9 +3,6 @@ name = "special_issues_service"
 version = "1.0.0"
 description = "Special Issues Service, part of the Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
-packages = [
-    {include = "app"}
-]
 
 [tool.poetry.dependencies]
 python = "^3.8"
