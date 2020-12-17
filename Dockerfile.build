@@ -15,6 +15,10 @@ RUN /install-git
 RUN /install-awscli
 RUN /install-docker
 
+# Install docker-compose
+RUN curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+RUN chmod +x /usr/local/bin/docker-compose
+
 # Install Git-lfs
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash \
     && retry yum install -y -q git-lfs \
