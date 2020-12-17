@@ -5,9 +5,11 @@ COMMON_PREFIX=benefits-apis-claims-attributes
 BASE_APPLICATION_IMAGE=va-python-application-base
 
 # Copy in cacert file to enable network operations w/ self-signed certificate
+echo "Copying cert file from ${SSL_CERT_FILE}..."
 cp $SSL_CERT_FILE ./docker/$BASE_APPLICATION_IMAGE
 
 # Build our base images - until this is centrally hosted, we build and reference locally in each constituent dockerfile
+echo "Building base images..."
 docker build --target "production" -t $BASE_APPLICATION_IMAGE:production ./docker/$BASE_APPLICATION_IMAGE
 docker build --target "test" -t $BASE_APPLICATION_IMAGE:test ./docker/$BASE_APPLICATION_IMAGE
 
