@@ -35,10 +35,6 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     curl 
 
-# install poetry - respects $POETRY_VERSION & $POETRY_HOME
-ENV POETRY_VERSION=1.1.4
-RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-
 ###############################################
 # Certificates
 # Our build environments contain self-signed certificates, thus the below is necessary
@@ -62,6 +58,10 @@ FROM python-base as builder-base
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     build-essential
+
+# install poetry - respects $POETRY_VERSION & $POETRY_HOME
+ENV POETRY_VERSION=1.1.4
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 
 # Cache project requirements, install runtime dependencies
 WORKDIR $PYSETUP_PATH
