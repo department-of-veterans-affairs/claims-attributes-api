@@ -14,4 +14,4 @@ export GUNICORN_CONF=${GUNICORN_CONF:-$DEFAULT_GUNICORN_CONF}
 export WORKER_CLASS=${WORKER_CLASS:-"uvicorn.workers.UvicornWorker"}
 
 # Start Gunicorn
-exec gunicorn -k "$WORKER_CLASS" -c "$GUNICORN_CONF" "$APP_MODULE"
+exec gunicorn -k "$WORKER_CLASS" -c "$GUNICORN_CONF" -b :"$BOUND_PORT" "$APP_MODULE"

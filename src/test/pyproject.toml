@@ -9,6 +9,7 @@ python = "^3.8"
 requests = "^2.25.1"
 pydantic = {extras = ["dotenv"], version = "^1.7.3"}
 importlib-resources = "^3.3.0"
+docker = "^4.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"

@@ -2,47 +2,40 @@ version: "3"
 
 services:
   api:
-    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes:${VERSION}
-    restart: always
+    image: claims_attributes_api:latest
     build: 
       context: ./src/api_service
       dockerfile: $PWD/docker/Dockerfile
-    env_file:
-      - src/api_service/app/docker.env
-    ports:
-      - "8000:8000"
-    command: gunicorn -k "uvicorn.workers.UvicornWorker" -b :8000 app.main:app
     depends_on:
       - classifier
       - flashes
       - specialissues
 
   classifier:
-    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-classifier-service:${VERSION}
-    restart: always
+    image: classifier:latest
     build: 
       context: ./src/classifier_service
       dockerfile: $PWD/docker/Dockerfile
-    ports:
-      - "8001:8001"
-    command: gunicorn -k "uvicorn.workers.UvicornWorker" -b :8001 app.main:app
 
   flashes:
-    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-flashes-service:${VERSION}
-    restart: always
+    image: flashes:latest
     build: 
       context: ./src/flashes_service
       dockerfile: $PWD/docker/Dockerfile
-    ports:
-      - "8002:8002"
-    command: gunicorn -k "uvicorn.workers.UvicornWorker" -b :8002 app.main:app
   
   specialissues:
-    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-special-issues-service:${VERSION}
-    restart: always
+    image: special_issues:latest
     build: 
       context: ./src/special_issues_service
       dockerfile: $PWD/docker/Dockerfile
-    ports:
-      - "8003:8003"
-    command: gunicorn -k "uvicorn.workers.UvicornWorker" -b :8003 app.main:app
+  
+  test:
+    image: caapi_test:latest
+    build: 
+      context: ./src/test
+      dockerfile: $PWD/docker/Dockerfile
+    depends_on:
+      - api
+      - classifier
+      - flashes
+      - specialissues

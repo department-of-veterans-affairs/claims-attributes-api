@@ -107,10 +107,11 @@ CMD ["start-reload.sh"]
 ###############################################
 FROM development AS test
 WORKDIR /app
+COPY docker-test-entrypoint.sh /docker-test-entrypoint.sh
 RUN chmod +x docker-test-entrypoint.sh
 # The docker entrypoint activates a virtualenv,
 # the test one then runs the tests with supplied arguments
-ENTRYPOINT ["/docker-entrypoint.sh", "/app/docker-test-entrypoint.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh", "/docker-test-entrypoint.sh"]
 
 ###############################################
 # Production Image
