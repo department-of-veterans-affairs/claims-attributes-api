@@ -30,10 +30,11 @@ services:
       dockerfile: $PWD/docker/Dockerfile
   
   test:
-    image: caapi_test:latest
+    image: api:test
     build: 
-      context: ./src/test
+      context: ./src/api_service
       dockerfile: $PWD/docker/Dockerfile
+      target: test
     depends_on:
       - api
       - classifier

@@ -1,5 +1,5 @@
 # Meant to be used alongside the base `docker-compose.yml` file with a command like:
-# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# docker-compose -f docker-compose.yml -f docker-compose..yml up -d
 # See more here: https://docs.docker.com/compose/extends/#multiple-compose-files
 version: "3"
 
@@ -8,6 +8,8 @@ services:
     image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes:${VERSION}
     ports:
       - "80:80"
+    environment:
+      - BOUND_PORT=80
 
   classifier:
     image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-classifier-service:${VERSION}
