@@ -23,6 +23,6 @@ def test_special_issues(docker_client):
 
 def test_classifier(docker_client):
     print("Running Classifier tests...")
-    docker_client.containers.run("classifier:test", "regression-test")
+    result = docker_client.containers.run("classifier:test", "regression-test")
     print(f"Result: {result}")
 
