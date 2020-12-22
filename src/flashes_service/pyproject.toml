@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "flashes_service"
+name = "app"
 version = "1.0.0"
 description = "Flashes Service, part of the Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
@@ -18,6 +18,10 @@ black = {version = "^20.8b1", allow-prereleases = true}
 # Commented out - uncomment for local development of shared library
 # See https://github.com/python-poetry/poetry/issues/668
 # caapi_shared = {path="../shared", develop=true}
+
+[tool.poetry.scripts]
+test = 'scripts:test'
+server = 'scripts:server'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "classifier_service"
+name = "app"
 version = "1.0.0"
 description = "Classifier Service for Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
@@ -22,6 +22,10 @@ pylint = "^2.6.0"
 # Commented out - uncomment for local development of shared library
 # See https://github.com/python-poetry/poetry/issues/668
 # caapi_shared = {path="../shared", develop=true}
+
+[tool.poetry.scripts]
+test = 'scripts:test'
+server = 'scripts:server'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
