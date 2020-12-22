@@ -29,12 +29,11 @@ services:
       context: ./src/special_issues_service
       dockerfile: $PWD/docker/Dockerfile
   
-  test:
-    image: api:test
+  testing:
+    image: testing:test
     build: 
-      context: ./src/api_service
+      context: ./src/testing_service
       dockerfile: $PWD/docker/Dockerfile
-      target: test
     depends_on:
       - api
       - classifier

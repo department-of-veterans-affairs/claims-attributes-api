@@ -20,7 +20,9 @@ RUN poetry install
 WORKDIR /app
 COPY . .
 
-FROM va-python-application-base:test as test
+FROM development as test
+COPY --from=va-python-application-base:test /docker-test-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh", "/docker-test-entrypoint.sh"]
 
 FROM va-python-application-base:production as production
 # Copying our virtualenv

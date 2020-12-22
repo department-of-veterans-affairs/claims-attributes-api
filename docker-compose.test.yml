@@ -5,31 +5,38 @@ version: "3"
 
 services:
   api:
+    image: api:test
     build: 
       target: test
     env_file:
       - src/api_service/app/docker.env
     ports:
       - "8000:8000"
-    command: "regression-test"
 
   classifier:
+    image: classifier:test
     build: 
       target: test
     ports:
       - "8001:8001"
-    command: "regression-test"
 
   flashes:
+    image: flashes:test
     build: 
       target: test
     ports:
       - "8002:8002"
-    command: "regression-test"
-  
+
   specialissues:
+    image: specialissues:test
     build: 
       target: test
     ports:
       - "8003:8003"
-    command: "regression-test"
+
+  testing:
+    image: testing:test
+    build:
+      target: test
+    ports:
+      - "8004:8004"

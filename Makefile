@@ -2,6 +2,7 @@
 
 POETRY:=$(shell which poetry || echo install poetry. see https://python-poetry.org/)
 DOCKER:=$(shell which docker || echo install docker. see https://docs.docker.com/get-docker/)
+DOCKER_COMPOSE:=$(shell which docker-compose || echo install docker-compose. see https://docs.docker.com/compose/install/)
 UNAME_S := $(shell uname -s)
 
 CERT_FILE = cacert.pem
@@ -39,14 +40,12 @@ docker-dev: cert docker-base-images
 	$(DOCKER) build --target development -t api:dev .
 	$(DOCKER) run -d --name api_dev -p 8000:80 api:dev
 
-dc-dev: cert docker-base-images
-	docker-compose up
-
 docker-prod: cert docker-base-images
 	$(DOCKER) build --target production -t api:prod .
 	$(DOCKER) run -d --name api_prod -p 8001:80 api:prod
 
 docker-test: cert docker-base-images
+	VERSION="test" $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.test.yml  up --build
 	$(DOCKER) build --target production -t api:test .
 	$(DOCKER) run --rm --network host api:testing regression-test
 	$(DOCKER) run --rm --network host api:testing smoke-test
