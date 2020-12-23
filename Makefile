@@ -67,5 +67,13 @@ docker-base-images:
 	$(DOCKER) build --target "test" -t "$(BASE_APPLICATION_IMAGE):test" ./docker/$(BASE_APPLICATION_IMAGE)
 	$(DOCKER) build --target "production" -t "$(BASE_APPLICATION_IMAGE):production" ./docker/$(BASE_APPLICATION_IMAGE)
 
+docker-clean:
+	ECS_IMAGES := $(shell docker images --filter=reference="533575416491.dkr.ecr.us-gov-west-1.amazonaws.com*" -q)
+	$(DOCKER) rmi $(ECS_IMAGES)
+
+docker-push:
+	ECS_IMAGES := $(shell docker images --filter=reference="533575416491.dkr.ecr.us-gov-west-1.amazonaws.com*" -q)
+	$(DOCKER) push $(ECS_IMAGES)
+
 clean:
 	$(DOCKER) rm -f api_dev api_prod || true
