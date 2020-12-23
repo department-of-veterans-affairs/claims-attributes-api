@@ -54,8 +54,11 @@ local-test:
 docker-dev: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
-docker-prod: cert docker-base-images
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker-prod-local: cert docker-base-images
+	export VERSION=local; $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
+
+docker-prod: docker-base-images
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
 
 docker-test: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
