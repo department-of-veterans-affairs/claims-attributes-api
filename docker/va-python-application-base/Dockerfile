@@ -96,8 +96,7 @@ WORKDIR /app
 COPY . .
 
 EXPOSE 8000
-ENTRYPOINT /docker-entrypoint.sh $0 $@
-CMD ["start-reload.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh", "/start-reload.sh"]
 
 ###############################################
 # Test Image

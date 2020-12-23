@@ -5,7 +5,7 @@ def test():
     """
     Run all tests for this module
     """
-    subprocess.run(["pytest", "-sv"])
+    subprocess.run(["pytest", "-sv", "--cov=app", "--cov-report=xml", "--junitxml=test.xml" ])
 
 
 def server():

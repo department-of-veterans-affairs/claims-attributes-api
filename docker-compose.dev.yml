@@ -5,6 +5,7 @@ version: "3"
 
 services:
   api:
+    image: api:dev
     build:
       target: development
     env_file:
@@ -13,18 +14,21 @@ services:
       - "8000:8000"
 
   classifier:
+    image: classifier:dev
     build:
       target: development
     ports:
       - "8001:8001"
 
   flashes:
+    image: flashes:dev
     build:
       target: development
     ports:
       - "8002:8002"
   
   specialissues:
+    image: specialissues:dev
     build:
       target: development
     ports:

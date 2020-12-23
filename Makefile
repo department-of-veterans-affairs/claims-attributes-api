@@ -1,5 +1,5 @@
-.PHONY: local-build local-build-macos local-run local-test docker-dev docker-prod docker-test docker-base-images clean dc-dev
-
+SHELL := /bin/bash
+.PHONY: local-build local-build-macos local-run local-test docker-dev docker-prod docker-test docker-base-images clean 
 POETRY:=$(shell which poetry || echo install poetry. see https://python-poetry.org/)
 DOCKER:=$(shell which docker || echo install docker. see https://docs.docker.com/get-docker/)
 DOCKER_COMPOSE:=$(shell which docker-compose || echo install docker-compose. see https://docs.docker.com/compose/install/)
@@ -28,27 +28,38 @@ $(CERT_FILE):
 local: cert local-build local-run
 
 local-build:
-	$(POETRY) install
+	for project in api_service classifier_service flashes_service special_issues_service testing_service ; do \
+		echo "Installing $$project ..."; cd ./src/$$project ; $(POETRY) install ; cd ../..; \
+	done
 
-local-run: local-build
-	$(POETRY) run uvicorn claims_attributes.main:app --reload
+local-run: local-run-api local-run-classifier local-run-flashes local-run-special-issues
+
+local-run-api:
+	cd ./src/api_service ; $(POETRY) run uvicorn app.main:app --reload --port 8000
+
+local-run-classifier:
+	cd ./src/classifier_service ; $(POETRY) run uvicorn app.main:app --reload --port 8001
+
+local-run-flashes:
+	cd ./src/flashes_service ; $(POETRY) run uvicorn app.main:app --reload --port 8002
+
+local-run-special-issues:
+	cd ./src/special_issues_service ; $(POETRY) run uvicorn app.main:app --reload --port 8003
 
 local-test:
-	$(POETRY) run pytest -sv
+	for project in api_service classifier_service flashes_service special_issues_service testing_service ; do \
+		echo "Testing $$project ..."; cd ./src/$$project ; $(POETRY) run pytest -sv --cov=app --cov-report=xml --junitxml=test.xml  ; cd ../..; \
+	done
 
 docker-dev: cert docker-base-images
-	$(DOCKER) build --target development -t api:dev .
-	$(DOCKER) run -d --name api_dev -p 8000:80 api:dev
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 docker-prod: cert docker-base-images
-	$(DOCKER) build --target production -t api:prod .
-	$(DOCKER) run -d --name api_prod -p 8001:80 api:prod
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 docker-test: cert docker-base-images
-	VERSION="test" $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.test.yml  up --build
-	$(DOCKER) build --target production -t api:test .
-	$(DOCKER) run --rm --network host api:testing regression-test
-	$(DOCKER) run --rm --network host api:testing smoke-test
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
+	$(POETRY) run pytest -sv --cov=app --cov-report=xml --junitxml=test.xml 
 
 docker-base-images:
 	$(DOCKER) build --target "builder-base" -t "$(BASE_APPLICATION_IMAGE):builder" ./docker/$(BASE_APPLICATION_IMAGE)
