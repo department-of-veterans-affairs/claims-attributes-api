@@ -3,7 +3,7 @@ version: "3"
 services:
   api:
     image: claims_attributes_api:latest
-    build: 
+    build:
       context: ./src/api_service
       dockerfile: $PWD/docker/Dockerfile
     depends_on:
@@ -13,29 +13,18 @@ services:
 
   classifier:
     image: classifier:latest
-    build: 
+    build:
       context: ./src/classifier_service
       dockerfile: $PWD/docker/Dockerfile
 
   flashes:
     image: flashes:latest
-    build: 
+    build:
       context: ./src/flashes_service
       dockerfile: $PWD/docker/Dockerfile
   
   specialissues:
     image: special_issues:latest
-    build: 
+    build:
       context: ./src/special_issues_service
       dockerfile: $PWD/docker/Dockerfile
-  
-  testing:
-    image: testing:test
-    build: 
-      context: ./src/testing_service
-      dockerfile: $PWD/docker/Dockerfile
-    depends_on:
-      - api
-      - classifier
-      - flashes
-      - specialissues

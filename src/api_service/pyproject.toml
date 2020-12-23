@@ -25,6 +25,8 @@ pylint = "^2.6.0"
 # See https://github.com/python-poetry/poetry/issues/668
 # caapi_shared = {path="../shared", develop=true}
 
+pytest-cov = "^2.10.1"
+requests-mock = "^1.8.0"
 [tool.poetry.scripts]
 test = 'scripts:test'
 server = 'scripts:server'

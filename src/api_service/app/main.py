@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.openapi.utils import get_openapi
-from .routers import healthcheck, predict
+from app.routers import healthcheck, predict
 from pathlib import Path
 from importlib_resources import files
 
@@ -15,8 +15,6 @@ app = FastAPI(
 
 
 def custom_openapi():
-    if app.openapi_schema:
-        return app.openapi_schema
     openapi_schema = get_openapi(
         title="Claims Attributes API",
         version="1.0.0",

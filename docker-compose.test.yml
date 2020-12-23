@@ -6,7 +6,7 @@ version: "3"
 services:
   api:
     image: api:test
-    build: 
+    build:
       target: test
     env_file:
       - src/api_service/app/docker.env
@@ -15,21 +15,21 @@ services:
 
   classifier:
     image: classifier:test
-    build: 
+    build:
       target: test
     ports:
       - "8001:8001"
 
   flashes:
     image: flashes:test
-    build: 
+    build:
       target: test
     ports:
       - "8002:8002"
 
   specialissues:
     image: specialissues:test
-    build: 
+    build:
       target: test
     ports:
       - "8003:8003"
@@ -37,6 +37,13 @@ services:
   testing:
     image: testing:test
     build:
+      context: ./src/testing_service
+      dockerfile: $PWD/docker/Dockerfile
       target: test
     ports:
       - "8004:8004"
+    depends_on:
+      - api
+      - classifier
+      - flashes
+      - specialissues

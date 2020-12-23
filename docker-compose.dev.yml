@@ -5,7 +5,7 @@ version: "3"
 
 services:
   api:
-    build: 
+    build:
       target: development
     env_file:
       - src/api_service/app/docker.env
@@ -13,19 +13,19 @@ services:
       - "8000:8000"
 
   classifier:
-    build: 
+    build:
       target: development
     ports:
       - "8001:8001"
 
   flashes:
-    build: 
+    build:
       target: development
     ports:
       - "8002:8002"
   
   specialissues:
-    build: 
+    build:
       target: development
     ports:
       - "8003:8003"

@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from typing import List
 from pydantic import BaseModel
 import requests
+import logging
 from caapi_shared.schemas import (
     ClaimInput,
     Contention,
@@ -19,15 +20,15 @@ router = APIRouter()
 class Predictor:
     async def predict(self, claim_input: ClaimInput):
         contentions = []
-        classifications = self.safe_get(
+        classifications = self.safe_post(
             settings.classifier_uri, claim_input.json(), ClassifierServiceOutput
         ).classifications
 
-        special_issues = self.safe_get(
+        special_issues = self.safe_post(
             settings.special_issues_uri, claim_input.json(), SpecialIssueServiceOutput
         ).special_issues
 
-        flashes = self.safe_get(
+        flashes = self.safe_post(
             settings.flashes_uri, claim_input.json(), FlashesServiceOutput
         ).flashes
 
@@ -46,11 +47,17 @@ class Predictor:
             contentions.append(contention)
         return Prediction(contentions=contentions)
 
-    def safe_get(self, url: str, data: dict, model: BaseModel):
+    def safe_post(self, url: str, data: dict, model: BaseModel):
         parsed_data = None
         response = requests.post(url, data=data)
-        if response.status_code == 200:
-            parsed_data = model.parse_obj(response.json())
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logging.error(
+                f"Abnormal response code connecting to {url}: {response.status_code}, {e}"
+            )
+            raise
+        parsed_data = model.parse_obj(response.json())
         return parsed_data
 
 
