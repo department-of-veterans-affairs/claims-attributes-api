@@ -1,4 +1,3 @@
-SHELL := /bin/bash
 .PHONY: local-build local-build-macos local-run local-test docker-dev docker-prod docker-test docker-base-images clean 
 POETRY:=$(shell which poetry || echo install poetry. see https://python-poetry.org/)
 DOCKER:=$(shell which docker || echo install docker. see https://docs.docker.com/get-docker/)
