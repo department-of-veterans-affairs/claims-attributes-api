@@ -4,7 +4,7 @@ DOCKER:=$$(which docker || echo "install docker. see https://docs.docker.com/get
 DOCKER_COMPOSE:=$$(which docker-compose || echo "install docker-compose. see https://docs.docker.com/compose/install/")
 
 # Note this will change value over time, as it is defined with "=" instead of ":="
-ECS_IMAGES=$$(docker images "533575416491.dkr.ecr.us-gov-west-1.amazonaws.com*" -q)
+ECS_IMAGES=$$(docker images "533575416491.dkr.ecr.us-gov-west-1.amazonaws.com*:*" -q)
 
 CERT_FILE = ./docker/va-python-application-base/cacert.pem
 BASE_APPLICATION_IMAGE = va-python-application-base
@@ -58,7 +58,7 @@ docker-prod: docker-base-images
 
 docker-test: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
-	$(POETRY) run pytest -sv --cov=app --cov-report=xml --junitxml=test.xml 
+	docker run --rm --network host testing:test regression-test
 
 docker-base-images:
 	$(DOCKER) build --target "builder-base" -t "$(BASE_APPLICATION_IMAGE):builder" ./docker/$(BASE_APPLICATION_IMAGE)

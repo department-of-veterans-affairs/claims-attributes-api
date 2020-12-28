@@ -1,4 +1,3 @@
-ARG IS_RO=false
 FROM va-python-application-base:builder as builder-base
 
 # Cache project requirements, install runtime dependencies
