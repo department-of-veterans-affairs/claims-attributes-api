@@ -3,7 +3,10 @@ POETRY:=$$(which poetry || echo "install poetry. see https://python-poetry.org/"
 DOCKER:=$$(which docker || echo "install docker. see https://docs.docker.com/get-docker/")
 DOCKER_COMPOSE:=$$(which docker-compose || echo "install docker-compose. see https://docs.docker.com/compose/install/")
 
-CERT_FILE = cacert.pem
+# Note this will change value over time, as it is defined with "=" instead of ":="
+ECS_IMAGES=$$(docker images "*" -q)
+
+CERT_FILE = ./docker/va-python-application-base/cacert.pem
 BASE_APPLICATION_IMAGE = va-python-application-base
 
 all:
@@ -17,10 +20,6 @@ cert: $(CERT_FILE)
 $(CERT_FILE):
 	@echo "Copying cert file from python certifi module : $(CERT_FILE)"
 	cp $$(python -m certifi) $(CERT_FILE)
-	cp $(CERT_FILE) ./src/api_service/
-	cp $(CERT_FILE) ./src/classifier_service/
-	cp $(CERT_FILE) ./src/flashes_service/
-	cp $(CERT_FILE) ./src/special_issues_service/
 
 local: cert local-build local-run
 
@@ -68,10 +67,20 @@ docker-base-images:
 	$(DOCKER) build --target "production" -t "$(BASE_APPLICATION_IMAGE):production" ./docker/$(BASE_APPLICATION_IMAGE)
 
 docker-clean:
-	$(DOCKER) rmi $$(docker images "533575416491.dkr.ecr.us-gov-west-1.amazonaws.com*" -q)
+	@echo "Removing the following ECS IMAGES: $(ECS_IMAGES)"
+	if test "$(ECS_IMAGES)"; then \
+		$(DOCKER) rmi $(ECS_IMAGES); \
+	else \
+		echo "ECS_IMAGES Empty"; \
+	fi;
 
 docker-push:
-	$(DOCKER) push $(ECS_IMAGES)
+	@echo "Pushing the following ECS IMAGES: $(ECS_IMAGES)"
+	if test "$(ECS_IMAGES)"; then \
+		$(DOCKER) push $(ECS_IMAGES); \
+	else \
+		echo "ECS_IMAGES Empty"; \
+	fi;
 
 clean:
 	$(DOCKER) rm -f api_dev api_prod || true
