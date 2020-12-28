@@ -11,15 +11,15 @@ cp $SSL_CERT_FILE ./docker/$BASE_APPLICATION_IMAGE
 echo "Building app with Docker-compose..."
 make docker-prod
 
-if [ $RELEASE == true ]
-then
+#if [ $RELEASE == true ]
+#then
   echo "Release config. Pushing images..."
   aws ecr get-login-password --region us-gov-west-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
 
   # Our "API" image is just named for the service itself. Push that first
   echo "Pushing images"
   make docker-push
-fi
+#fi
 
 echo "Removing images..."
 make docker-clean
