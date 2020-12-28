@@ -4,7 +4,7 @@ DOCKER:=$$(which docker || echo "install docker. see https://docs.docker.com/get
 DOCKER_COMPOSE:=$$(which docker-compose || echo "install docker-compose. see https://docs.docker.com/compose/install/")
 
 # Note this will change value over time, as it is defined with "=" instead of ":="
-ECS_IMAGES=$$(docker images --filter=reference="533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes*:*" -q)
+ECS_IMAGES=$$(docker images --filter=reference="533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes*:*" --format "{{.Repository}}")
 
 CERT_FILE = ./docker/va-python-application-base/cacert.pem
 BASE_APPLICATION_IMAGE = va-python-application-base
