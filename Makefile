@@ -58,7 +58,7 @@ docker-prod: docker-base-images
 
 docker-test: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
-	docker run --rm --network host testing:test regression-test
+	docker run -v /var/run/docker.sock:/var/run/docker.sock --rm --network host testing:test regression-test
 
 docker-base-images:
 	$(DOCKER) build --target "builder-base" -t "$(BASE_APPLICATION_IMAGE):builder" ./docker/$(BASE_APPLICATION_IMAGE)
