@@ -78,7 +78,7 @@ docker-push:
 	@echo "Pushing the following ECS IMAGES: $(ECS_IMAGES)"
 	if test "$(ECS_IMAGES)"; then \
 		for IMAGE in $(ECS_IMAGES); do \
-			 $(DOCKER) push $(ECS_IMAGES); \
+			 $(DOCKER) push $$IMAGE; \
 		done \
 	else \
 		echo "ECS_IMAGES Empty"; \
