@@ -1,4 +1,4 @@
-.PHONY: local-build local-build-macos local-run local-test docker-dev docker-prod docker-test docker-base-images clean 
+.PHONY: local-build local-build-macos local-run local-test docker-dev docker-prod docker-test docker-base-images docker-clean docker-push clean 
 POETRY:=$$(which poetry || echo "install poetry. see https://python-poetry.org/")
 DOCKER:=$$(which docker || echo "install docker. see https://docs.docker.com/get-docker/")
 DOCKER_COMPOSE:=$$(which docker-compose || echo "install docker-compose. see https://docs.docker.com/compose/install/")
