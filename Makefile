@@ -70,7 +70,7 @@ docker-base-images:
 	$(DOCKER) build --target "production" -t "$(BASE_APPLICATION_IMAGE):production" ./docker/$(BASE_APPLICATION_IMAGE)
 
 docker-clean:
-	ECS_IMAGES:=$(shell docker images)
+	ECS_IMAGES:=$(shell docker images -q)
 	$(DOCKER) rmi $(ECS_IMAGES)
 
 docker-push:
