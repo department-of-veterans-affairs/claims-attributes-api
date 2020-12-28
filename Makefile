@@ -77,7 +77,9 @@ docker-clean:
 docker-push:
 	@echo "Pushing the following ECS IMAGES: $(ECS_IMAGES)"
 	if test "$(ECS_IMAGES)"; then \
-		$(DOCKER) push $(ECS_IMAGES); \
+		for IMAGE in $(ECS_IMAGES); do \
+			 $(DOCKER) push $(ECS_IMAGES); \
+		done \
 	else \
 		echo "ECS_IMAGES Empty"; \
 	fi;
