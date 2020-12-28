@@ -1,8 +1,7 @@
 .PHONY: local-build local-build-macos local-run local-test docker-dev docker-prod docker-test docker-base-images clean 
-POETRY:=$(shell which poetry || echo install poetry. see https://python-poetry.org/)
-DOCKER:=$(shell which docker || echo install docker. see https://docs.docker.com/get-docker/)
-DOCKER_COMPOSE:=$(shell which docker-compose || echo install docker-compose. see https://docs.docker.com/compose/install/)
-UNAME_S := $(shell uname -s)
+POETRY:=$$(which poetry || echo "install poetry. see https://python-poetry.org/")
+DOCKER:=$$(which docker || echo "install docker. see https://docs.docker.com/get-docker/")
+DOCKER_COMPOSE:=$$(which docker-compose || echo "install docker-compose. see https://docs.docker.com/compose/install/")
 
 CERT_FILE = cacert.pem
 BASE_APPLICATION_IMAGE = va-python-application-base
@@ -17,8 +16,7 @@ cert: $(CERT_FILE)
 
 $(CERT_FILE):
 	@echo "Copying cert file from python certifi module : $(CERT_FILE)"
-	$(eval CERT_FILE_ORIGIN := $(shell python -m certifi))
-	cp $(CERT_FILE_ORIGIN) $(CERT_FILE)
+	cp $$(python -m certifi) $(CERT_FILE)
 	cp $(CERT_FILE) ./src/api_service/
 	cp $(CERT_FILE) ./src/classifier_service/
 	cp $(CERT_FILE) ./src/flashes_service/
@@ -70,11 +68,9 @@ docker-base-images:
 	$(DOCKER) build --target "production" -t "$(BASE_APPLICATION_IMAGE):production" ./docker/$(BASE_APPLICATION_IMAGE)
 
 docker-clean:
-	ECS_IMAGES:=$(shell docker images -q)
-	$(DOCKER) rmi $(ECS_IMAGES)
+	$(DOCKER) rmi $$(docker images "533575416491.dkr.ecr.us-gov-west-1.amazonaws.com*" -q)
 
 docker-push:
-	ECS_IMAGES:=$(shell docker images "533575416491.dkr.ecr.us-gov-west-1.amazonaws.com*" -q)
 	$(DOCKER) push $(ECS_IMAGES)
 
 clean:
