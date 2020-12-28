@@ -1,0 +1,35 @@
+# Meant to be used alongside the base `docker-compose.yml` file with a command like:
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+# See more here: https://docs.docker.com/compose/extends/#multiple-compose-files
+version: "3"
+
+services:
+  api:
+    image: api:dev
+    build:
+      target: development
+    env_file:
+      - src/api_service/app/docker.env
+    ports:
+      - "8000:8000"
+
+  classifier:
+    image: classifier:dev
+    build:
+      target: development
+    ports:
+      - "8001:8001"
+
+  flashes:
+    image: flashes:dev
+    build:
+      target: development
+    ports:
+      - "8002:8002"
+  
+  specialissues:
+    image: specialissues:dev
+    build:
+      target: development
+    ports:
+      - "8003:8003"
