@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+set -x
+
+GIT_VERSION=2.28.0
+
+dnf install -y -q libcurl-devel expat-devel gettext-devel openssl-devel perl-CPAN perl-devel zlib-devel gcc autoconf
+tmp=$(mktemp -d)
+trap "rm -rf $tmp" EXIT
+
+cd $tmp
+curl -so git.tar.gz https://mirrors.edge.kernel.org/pub/software/scm/git/git-$GIT_VERSION.tar.gz
+tar xzf git.tar.gz
+cd git-*
+make prefix=/usr/local all
+make prefix=/usr/local install

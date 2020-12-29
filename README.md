@@ -56,12 +56,6 @@ Run `make local` to run the app locally.
 
 This installs a necessary certificate file, then uses a function in `scripts.py` defined in `pyproject.toml`. Under the hood, FastAPI uses the gunicorn ASGI server to serve content.
 
-#### VSCode
-
-Each service within the bundle contains a `settings.json` and `launch.json` to allow for smooth VSCode debugging.
-
-To enable this, the `poetry.toml` file within each service specifies the `in-project` option in order to install a virtualenv into `.venv` within every given service directory. By default it is included in `gitignore`! All that is necessary is to call `poetry update` and then `code .` for each project within the directory, and run the `debug` target to enable breakpoints, linting, and formatting support.
-
 ### Docker
 
 This project builds with Docker [multistage](https://docs.docker.com/develop/develop-images/multistage-build/) builds via the `Dockerfile`.

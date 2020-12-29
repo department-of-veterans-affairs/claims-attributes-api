@@ -2,11 +2,11 @@ ARG VERSION
 
 FROM vasdvp/health-apis-centos:8
 
-COPY dockerfile_shared/install-git-centos8 /install-git
-COPY dockerfile_shared/install-docker-centos8 /install-docker
-COPY dockerfile_shared/install-awscli /install-awscli
-COPY dockerfile_shared/combine-ca-certs /combine-ca-certs
-COPY dockerfile_shared/retry /usr/local/bin/retry
+ADD shared/install-git-centos8 /install-git
+ADD shared/install-docker-centos8 /install-docker
+ADD shared/install-awscli /install-awscli
+ADD shared/combine-ca-certs /combine-ca-certs
+ADD shared/retry /usr/local/bin/retry
 
 #
 # Install Git, awscli and Docker
@@ -15,10 +15,6 @@ RUN /install-git
 RUN /install-awscli
 RUN /install-docker
 
-# Install docker-compose
-RUN curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-RUN chmod +x /usr/local/bin/docker-compose
-
 # Install Git-lfs
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash \
     && retry yum install -y -q git-lfs \
@@ -26,5 +22,5 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.r
 
 # Install certs
 ENV SSL_CERT_FILE=$ADDITIONAL_CA_CERTS/cacert.pem
-COPY dockerfile_shared/combine-ca-certs /combine-ca-serts
+COPY shared/combine-ca-certs /combine-ca-serts
 RUN /combine-ca-certs $SSL_CERT_FILE

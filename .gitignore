@@ -4,5 +4,3 @@
 __pycache__
 .vscode/settings.json
 cacert.pem
-*xml
-.coverage
