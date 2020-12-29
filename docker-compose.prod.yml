@@ -7,9 +7,9 @@ services:
   api:
     image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes:${VERSION}
     ports:
-      - "80:80"
+      - "8000:8000"
     environment:
-      - BOUND_PORT=80
+      - BOUND_PORT=8000
 
   classifier:
     image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-classifier-service:${VERSION}
@@ -24,13 +24,15 @@ services:
       - "8002:8002"
     environment:
       - BOUND_PORT=8002
-  
+   
   specialissues:
     image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-special-issues-service:${VERSION}
     ports:
       - "8003:8003"
     environment:
       - BOUND_PORT=8003
-
-  test:
-    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-test:${VERSION}
+  
+  proxy:
+    image: nginx:latest
+    volumes: 
+      - $PWD/nginx/default.conf:/etc/nginx/conf.d/default.conf
