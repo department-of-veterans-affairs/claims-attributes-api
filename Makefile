@@ -42,23 +42,23 @@ local-run-flashes:
 local-run-special-issues:
 	cd ./src/special_issues_service ; $(POETRY) run uvicorn app.main:app --reload --port 8003
 
-local-test:
-	for project in api_service classifier_service flashes_service special_issues_service testing_service ; do \
+local-test: local-build
+	for project in api_service classifier_service flashes_service special_issues_service ; do \
 		echo "Testing $$project ..."; cd ./src/$$project ; $(POETRY) run pytest -sv --cov=app --cov-report=xml --junitxml=test.xml  ; cd ../..; \
 	done
 
 docker-dev: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
-docker-prod: docker-base-images
-	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
+docker-test: cert docker-base-images
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
+	docker run -v /var/run/docker.sock:/var/run/docker.sock --rm --network host testing:test regression-test
 
 docker-staging: docker-base-images
 	export VERSION=staging; $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.staging.yml up --build
 
-docker-test: cert docker-base-images
-	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
-	docker run -v /var/run/docker.sock:/var/run/docker.sock --rm --network host testing:test regression-test
+docker-prod: docker-base-images
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
 
 docker-base-images:
 	$(DOCKER) build --target "builder-base" -t "$(BASE_APPLICATION_IMAGE):builder" ./docker/$(BASE_APPLICATION_IMAGE)
