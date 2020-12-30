@@ -28,6 +28,7 @@ local-build:
 		echo "Installing $$project ..."; cd ./src/$$project ; $(POETRY) install ; cd ../..; \
 	done
 
+# Tip: run this with `make -j4 local-run` to run all services concurrently
 local-run: local-run-api local-run-classifier local-run-flashes local-run-special-issues
 
 local-run-api:
