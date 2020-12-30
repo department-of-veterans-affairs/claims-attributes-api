@@ -2,6 +2,7 @@
 .github
 .dockerignore
 .gitignore
+.venv
 
 .idea
 .vscode
