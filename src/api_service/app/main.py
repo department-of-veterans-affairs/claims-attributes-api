@@ -28,5 +28,5 @@ def custom_openapi():
 global_router = APIRouter()
 global_router.include_router(healthcheck.router)
 global_router.include_router(predict.router)
-global_router.openapi = custom_openapi()
 app.include_router(global_router, prefix=f"/{api_prefix}/{version}")
+app.openapi = custom_openapi

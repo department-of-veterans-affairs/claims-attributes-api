@@ -138,6 +138,5 @@ COPY app /app/app
 
 # Entrypoint will run the below command as part of its run
 WORKDIR /app
-EXPOSE 80
 ENTRYPOINT /docker-entrypoint.sh $0 $@
 CMD ["/start.sh"]

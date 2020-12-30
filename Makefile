@@ -1,4 +1,4 @@
-.PHONY: local-build local-build-macos local-run local-test docker-dev docker-prod docker-test docker-base-images docker-clean docker-push clean 
+.PHONY: local-build local-build-macos local-run local-test docker-dev docker-staging docker-prod docker-test docker-base-images docker-clean docker-push clean 
 POETRY:=$$(which poetry || echo "install poetry. see https://python-poetry.org/")
 DOCKER:=$$(which docker || echo "install docker. see https://docs.docker.com/get-docker/")
 DOCKER_COMPOSE:=$$(which docker-compose || echo "install docker-compose. see https://docs.docker.com/compose/install/")
@@ -28,6 +28,7 @@ local-build:
 		echo "Installing $$project ..."; cd ./src/$$project ; $(POETRY) install ; cd ../..; \
 	done
 
+# Tip: run this with `make -j4 local-run` to run all services concurrently
 local-run: local-run-api local-run-classifier local-run-flashes local-run-special-issues
 
 local-run-api:
@@ -42,23 +43,23 @@ local-run-flashes:
 local-run-special-issues:
 	cd ./src/special_issues_service ; $(POETRY) run uvicorn app.main:app --reload --port 8003
 
-local-test:
-	for project in api_service classifier_service flashes_service special_issues_service testing_service ; do \
+local-test: local-build
+	for project in api_service classifier_service flashes_service special_issues_service ; do \
 		echo "Testing $$project ..."; cd ./src/$$project ; $(POETRY) run pytest -sv --cov=app --cov-report=xml --junitxml=test.xml  ; cd ../..; \
 	done
 
 docker-dev: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
-docker-prod-local: cert docker-base-images
-	export VERSION=local; $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
-
-docker-prod: docker-base-images
-	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
-
 docker-test: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
 	docker run -v /var/run/docker.sock:/var/run/docker.sock --rm --network host testing:test regression-test
+
+docker-staging: docker-base-images
+	export VERSION=staging; $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.staging.yml up --build
+
+docker-prod: docker-base-images
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
 
 docker-base-images:
 	$(DOCKER) build --target "builder-base" -t "$(BASE_APPLICATION_IMAGE):builder" ./docker/$(BASE_APPLICATION_IMAGE)
