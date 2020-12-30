@@ -1,0 +1,29 @@
+# Meant to be used alongside the base `docker-compose.yml` file with a command like:
+# docker-compose -f docker-compose.yml -f docker-compose..yml up -d
+# See more here: https://docs.docker.com/compose/extends/#multiple-compose-files
+version: "3"
+
+services:
+  api:
+    image: api:staging
+    ports:
+      - "80:80"
+    environment:
+      - PORT=8001
+
+  classifier:
+    image: classifier:staging
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+
+  flashes:
+    image: flashes:staging
+    environment:
+      - PORT=8001
+   
+  specialissues:
+    image: specialissues:stagings
+    environment:
+      - PORT=8001

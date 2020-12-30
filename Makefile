@@ -1,4 +1,4 @@
-.PHONY: local-build local-build-macos local-run local-test docker-dev docker-prod docker-test docker-base-images docker-clean docker-push clean 
+.PHONY: local-build local-build-macos local-run local-test docker-dev docker-staging docker-prod docker-test docker-base-images docker-clean docker-push clean 
 POETRY:=$$(which poetry || echo "install poetry. see https://python-poetry.org/")
 DOCKER:=$$(which docker || echo "install docker. see https://docs.docker.com/get-docker/")
 DOCKER_COMPOSE:=$$(which docker-compose || echo "install docker-compose. see https://docs.docker.com/compose/install/")
@@ -50,11 +50,11 @@ local-test:
 docker-dev: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
-docker-prod-local: cert docker-base-images
-	export VERSION=local; $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
-
 docker-prod: docker-base-images
 	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
+
+docker-staging: docker-base-images
+	export VERSION=staging; $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.staging.yml up --build
 
 docker-test: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
