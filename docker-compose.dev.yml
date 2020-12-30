@@ -9,7 +9,7 @@ services:
     build:
       target: development
     env_file:
-      - src/api_service/app/docker.env
+      - src/api_service/app/docker.dev.env
     ports:
       - "8000:8000"
     environment:
