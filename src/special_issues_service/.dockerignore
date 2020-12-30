@@ -5,5 +5,6 @@
 # Un-exclude package.json and the app folder:
 #
 !app
+!tests
 !pyproject.toml
 !poetry.lock

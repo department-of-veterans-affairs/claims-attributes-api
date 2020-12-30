@@ -1,9 +1,0 @@
-# Exclude everything:
-#
-*
-
-# Un-exclude package.json and the app folder:
-#
-!app
-!pyproject.toml
-!poetry.lock
