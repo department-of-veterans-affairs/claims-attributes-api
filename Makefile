@@ -56,10 +56,11 @@ docker-test: cert docker-base-images
 	docker run -v /var/run/docker.sock:/var/run/docker.sock --rm --network host testing:test regression-test
 
 docker-staging: docker-base-images
-	export VERSION=staging; $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.staging.yml up --build
+	export VERSION=$$(cat VERSION); $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.staging.yml up --build
 
 docker-prod: docker-base-images
 	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml build
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.prod.test.yml build
 
 docker-base-images:
 	$(DOCKER) build --target "builder-base" -t "$(BASE_APPLICATION_IMAGE):builder" ./docker/$(BASE_APPLICATION_IMAGE)

@@ -19,3 +19,6 @@ services:
    
   specialissues:
     image: specialissues:${VERSION}_staging
+
+  testing:
+    image: testing:${VERSION}_staging

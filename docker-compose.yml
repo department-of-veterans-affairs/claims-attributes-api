@@ -22,9 +22,15 @@ services:
     build:
       context: ./src/flashes_service
       dockerfile: $PWD/docker/Dockerfile
-  
+
   specialissues:
     image: special_issues:latest
     build:
       context: ./src/special_issues_service
+      dockerfile: $PWD/docker/Dockerfile
+
+  testing:
+    image: testing:latest
+    build:
+      context: ./src/testing_service
       dockerfile: $PWD/docker/Dockerfile
