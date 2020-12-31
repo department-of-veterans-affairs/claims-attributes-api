@@ -53,7 +53,7 @@ services:
     environment:
       - PORT=8004
     env_file:
-      - src/api_service/app/prod.env
+      - src/testing_service/app/prod.env
     depends_on:
       - api
       - classifier
