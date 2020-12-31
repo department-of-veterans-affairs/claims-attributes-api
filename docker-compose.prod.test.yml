@@ -9,7 +9,7 @@ services:
     build:
       target: test
     env_file:
-      - src/api_service/app/prod.env
+      - src/api_service/app/docker.env
     ports:
       - "8000:8000"
     environment:
@@ -52,6 +52,8 @@ services:
       - "8004:8004"
     environment:
       - PORT=8004
+    env_file:
+      - src/api_service/app/prod.env
     depends_on:
       - api
       - classifier
