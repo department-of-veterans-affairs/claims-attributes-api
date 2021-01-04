@@ -1,48 +1,53 @@
 # Claims Attributes API
 
-The Claims Attributes API is a RESTful service that takes in a JSON-formatted array of free-text descriptions of disability-associated medical issues (“contentions”) and uses a machine learning model to identify statistically-likely associated classifications and labels.
+The Claims Attributes API takes in a JSON array of free-text, disability-related medical issues (called contentions) and returns the most likely official classifications and labels in a JSON array containing the below pieces of information. (Definitions are provided by Appendix C of the [M21-1 Adjudication Procedures Manual](https://www.knowva.ebenefits.va.gov/system/templates/selfservice/va_ssnew/help/customer/locale/en-US/portal/554400000001018/content/554400000036570/Appendix-C.-Index-of-Claim-Attributes)
 
 The return payload is a JSON array with the following pieces of information, with one entry per passed-in contention:
 
-- A formal numeric classification code
-- An array of labels representing facts about the contention itself (“special issues”)
-- An array of labels representing facts about the claimant (“flashes”), and
+- _Classification code_: The numeric code for the official VA disability term
+- _Special issues_: Flags that apply to specific contentions
+- _Flashes_: Flags that apply to certain claimants
 
-This API does not write any information to any system of record, it simply returns features that its model has deemed relevant, which the caller can then determine how to use.
+These classifications and labels are then used to ensure claims are processed quickly and accurately according to the appropriate review processes and offices.
 
-Its primary consumer at present is the Benefits Claims API, which calls into the service prior to claim establishment. The Benefits Claims API then uses the information returned by the Claims Attributes API to attach classification, special issues, and flashes to the contentions within the Corporate Database.
+_NOTE_: This API does not write any information to any system of record. It only returns features according to the learning model, which the caller can then determine how to use, for example to input into the VBA Corporate Database (“CorpDB”).
+
+This API’s primary consumer is the Benefits Claims API, which calls into the service prior to claim establishment. The Benefits Claims API then uses the information returned by the Claims Attributes API to attach classification, special issues, and flashes to the people and contentions within CorpDB.
+
+The below image describes how this will look:
+![API Overview](API_Interaction_Overview.png)
 
 ## Background
 
-Around 1.5 million Veterans apply for disability compensation benefits each year. To do so, they submit an application, the Application for Disability Compensation ([21-526EZ](https://www.va.gov/find-forms/about-form-21-526ez/)), in which they indicate what disabilities they’d like to claim. Applicants frequently write disability symptoms that don’t match VA’s list of ‘official’ symptoms: a Veteran can write “ringing in my ears” on a claim, but VA only recognizes “hearing loss” as an official symptom.
+Around 1.5 million Veterans apply for disability compensation benefits each year by submitting an Application for Disability Compensation ([21-526EZ](https://www.va.gov/find-forms/about-form-21-526ez/)), on which they indicate what disabilities they’d like to claim. Applicants frequently write disability symptoms that don’t match VA’s official list of symptoms. For example, a Veteran may write “ringing in my ears” as a disability, but VA only recognizes “hearing loss” as an official symptom.
 
-The Claims Attributes API takes this free text and uses it to identify information that can speed up claims processing in three primary ways:
+The Claims Attributes API helps translate this free text into usable, official contentions, thus speeding up claims processing by:
 
-### Identifying Classification
+- Identifying Classification
 
-The step of translating “ringing in my ears” into “hearing loss” is required before a claim can be established and assessed, and this translation can cause a delay. The Claims Attributes API uses a machine learning model, trained on previous, completed, anonymized claims data, to help in avoiding this delay by automatically translating between these informal free-text descriptions and their formal classifications.
+  The step of translating free-text into the official VA term is required before a claim can be established and assessed, which can cause delays. The Claims Attributes API helps avoid this delay by automatically making this translation.
 
-### Identifying Special Issues and Flashes
+- Identifying Special Issues and Flashes
 
-Depending on the facts of the constituent contentions or information about the claimant, the claim may require a particular regional office or specialist to review it - for instance, only certain regional offices process for Agent Orange exposure. Our data has shown that when claims have flashes and special issues added early on in the lifecycle of a claim, they are processed more quickly, as they are able to be prioritized appropriately and sent to the correct regional office or specialist trained in handling them.
+  Some claims require particular regional office or specialist’s review. The Claims Attributes API assigns special issues and flashes to a contention, allowing early identification and faster processing of claims that require specific reviews or processes. For example, claims with contentions associated with Agent Orange exposure must be reviewed by only certain regional offices, and assigning a special issue for Agent Orange will speed up this review by ensuring the claim reaches the correct office.
 
-We can use this same claims text, in conjunction with another machine learning model, to identify these facts about the particular contentions that make up the claim (“special issues”) and the claimant who is filing (“flashes”), again speeding up processing.
+- Centralizing Information
 
-### Centralizing Information
-
-One additional benefit of this API is centralizing the models that are used to provide these classifications. Previously, individual mail vendors had copies of an in-development machine learning model that performed the above-mentioned classifications, and deployed this locally. In vending this model via a single, centrally-hosted RESTful API, we gain the ability to update and improve the model over time in a way that all parties benefit.
+  The Claims Attributes API pulls classifications from a single, machine-learning model, saving time and providing increased accuracy over the previously-used models that were deployed locally. Over time, we update and improve our model to benefit all parties.
 
 ## Technical Overview
 
+This API uses a machine-learning model to match free-text contentions to the most likely official classifications and labels. Our machine-learning model is trained on millions of previously completed, anonymized disability claims, and is updated for greater accuracy when new information is available.
+
 ### Inputs and outputs
 
-The Claims Attributes takes as input a JSON payload object with a single member entitled `claim_text`, which is an array of free-text values. One example source of this data is each row of the `Current Disability(ies)` field of section IV (“Claim Information”) from the 21-526EZ form.
+The Claims Attributes API is passed JSON payload object with a single member entitled `claim_text`, which is an array of free-text values. One example source of this data is each row of the `Current Disability(ies)` field of section IV (Claim Information) from the 21-526EZ form.
 
-It passes each item in this array one at a time through a machine learning model that has been trained on millions of previously-completed disability claims, and then outputs an object with a single `contentions` property that maps to an array with an entry for each inputted contention.
+The API then passes each item in the array one at a time through the machine-learning model and outputs an object with a single `contentions` property that maps to an array with an entry for each inputted contention. Each entry in this array contains:
 
 Each entry in this array contains:
 
-- The original text
+- The original free-form claim text
 
 - An array of flashes identified based on this claim text
 
@@ -50,11 +55,14 @@ Each entry in this array contains:
 
 - The classification that our model identified based on this claim text. This is further broken down by the code itself, a percentage confidence, and the text of the classification code.
 
-Note that we do not actually write any data to any database - this API is purely informational and meant only to return data that callers can use to write to a system of record.
+Below is a diagram of how this information is mapped and returned:
+![Information Mapping](InfoMapping.png)
+
+_NOTE_: This API does not write any information to any system of record. It only returns features according to the learning model, which the caller can then determine how to use.
 
 ### Structure
 
-Externally, the Claims Attributes API is exposed to callers as a single service, but internally, it is broken down into three sub-components:
+The Claims Attributes API is exposed to callers as a single service, but internally, it is broken down into three sub-components:
 
 1. Contention classification
 2. Special issue identification, and
@@ -64,30 +72,20 @@ We will describe each sub-component below and where / how it gets its data.
 
 #### Contention Classification
 
-To establish the associated formal classification code and description, we first transform these strings into numeric vectors using a locally stored copy of a[ TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) transformation that has been trained with data from millions of previous claims. For example, let’s say we have received the following free-text contentions as input:
+To establish the classification code and description, we first transform the free-text contentions into numeric vectors using a locally stored copy of a [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) transformation that has been trained with data from millions of previous claims. Our classifier then turns these numeric vectors into the appropriate classifications.
 
-- Ringing in my ear
-- skin condition because of homelessness
+For this process, the API uses a locally stored copy of a previously trained Multi-Class Logistic Regression model to make the predictions. This model has been trained with data from past benefit claims to infer the relationship between the contention a Veteran wrote down on the form and the classification a VA employee ultimately assigned to it.
 
-Internally the vectorizer transforms these to
+The following table shows an example of translating free-text contentions to numeric vectors and then formal classifications.
 
-- [0.2, 3.4, …, 2.3]
-- [1.3, .3, …, 1.7]]
-
-After our input text has been vectorized, our classifier is effectively mapping these numeric vectors to classifications such as the following:
-
-- code: 3140, text: hearing loss, confidence: .97
-- code: 9016, text: skin, confidence: .97
-
-It does this using a locally stored copy of a previously trained Multi-Class Logistic Regression model to make the predictions. This model has been trained with data from past benefit claims to infer the relationship between the contention a Veteran wrote down on the form and the classification a VA employee ultimately assigned to it.
-
-##### Notes on model performance:
-
-Taking a look at the performance of the model at different confidence thresholds, we think that the ideal confidence threshold should be 70%. Anything from 70% and above should be assigned a classification. Setting the threshold at 70% means that 85.6% of all claims will be correctly labeled while we reduce the amount of misclassified auto-establish claims to 3.3%, leaving 11.1% of claims in need of manual revision.
+| Inputted Free-text Contentions         | Numeric Vectors    | Classifications                                 |
+| -------------------------------------- | ------------------ | ----------------------------------------------- |
+| Ringing in my ear                      | [0.2, 3.4, …, 2.3] | code: 3140, text: hearing loss, confidence: .97 |
+| Skin condition because of homelessness | [1.3, .3, …, 1.7]] | code: 9016, text: skin, confidence: .97         |
 
 #### Flash Identification
 
-Flashes are attributes appended to a claim that are related to the claimant. The Flashes sub-component receives a given contention and determines whether one or more of flashes from the below list could potentially apply:
+Flashes are attributes related to the claimant and appended to a claim. The flashes sub-component receives a given list of contentions and determines whether any flashes apply by performing [an edit distance analysis](https://en.wikipedia.org/wiki/Edit_distance#:~:text=In%20computational%20linguistics%20and%20computer,one%20string%20into%20the%20other) between the contention and phrases known to be related to our selected list of flashes:
 
 - Hardship
 - Seriously Injured/Very Seriously Injured
@@ -99,27 +97,20 @@ Flashes are attributes appended to a claim that are related to the claimant. The
 - Amyotrophic Lateral Sclerosis
 - Emergency Care
 
-There are three interwoven reasons as to why we have chosen this subset:
+If it finds a phrase that is matching or close to matching (such as if there is a typo in the free-text contention), it adds the flash.
 
-1. There is a higher than normal sense of urgency in processing these claims -- someone going through financial hardship could be about to lose their home, for instance.
-2. While many flashes are purely informational, these are the subset of flashes that require a trained reviewer to handle them.
-3. Our goal is to cut down on claim processing time by focusing on those issues that require specialty knowledge to process, so that we can route them to the correct person early.
+For example, if the flashes sub-component receives “skin condition because of homelessness” as a free-text contention, it may apply the “Homeless” flash.
 
-A comprehensive list of (corporate) flashes and their descriptions can be found[ here](https://www.knowva.ebenefits.va.gov/system/templates/selfservice/va_ssnew/help/customer/locale/en-US/portal/554400000001018/content/554400000036570/Appendix-C.-Index-of-Claim-Attributes#2) (see: index of corporate flashes)
+Our selected flashes list is not a complete list of existing flashes, most of which are informational only and do not impact claims processing. We only use these flashes because:
 
-As an example, the flashes sub-component might receive the following contention from Claims Attributes API: “skin condition because of homelessness”
+1. There is a higher than normal sense of urgency in processing these claims -- someone going through financial hardship (the Flash is internally just “hardship”) could be about to lose their home, for instance.
+2. They indicate special routing, a trained reviewer, or specialty knowledge is required to process the claim.
 
-Based on that description, it would determine that the following special issues could potentially apply: “Homeless”
-
-It does this by performing an [edit distance]([https://en.wikipedia.org/wiki/Edit_distance#:~:text=In computational linguistics and computer,one string into the other.)](https://en.wikipedia.org/wiki/Edit_distance#:~:text=In%20computational%20linguistics%20and%20computer,one%20string%20into%20the%20other.)) analysis between the contention and phrases known to be related to the flashes listed above. If it finds a phrase within a contention or a if it close enough to one of our known phrases (think: typos) then it adds the respective flash to it.
+A comprehensive list of flashes and their descriptions can be found [here](https://www.knowva.ebenefits.va.gov/system/templates/selfservice/va_ssnew/help/customer/locale/en-US/portal/554400000001018/content/554400000036570/Appendix-C-Index-of-Claim-Attributes?query=Appendix%20C.%20Index%20of%20Claim%20Attributes#2).
 
 #### Special Issue Identification
 
-The Special Issues sub-component receives the list of contentions, determines whether a special issue from the list below could potentially apply to the claim based on the contentions, and returns the list of special issues found.
-
-_Note: Special Issues are attributes appended to a claim that are related to the type of claim._
-
-List of Special Issues we look for:
+Special issues are attributes appended to a claim and related to the type of claim. The special issues sub-component receives a contention and determines whether any special issues apply by performing an [an edit distance analysis](https://en.wikipedia.org/wiki/Edit_distance#:~:text=In%20computational%20linguistics%20and%20computer,one%20string%20into%20the%20other) between the contention and phrases related to these special issues:
 
 - ALS (Amyotrophic Lateral Sclerosis)
 - AOOV (Agent Orange outside of Vietnam)
@@ -139,10 +130,7 @@ List of Special Issues we look for:
 - TBI (Traumatic Brain Injury)
 - C123 (C-123 Aircraft, related to AO)
 
-For example, the Special Issues Service might receive the following contention text from Claims Attributes API: “p.t.s.d from gulf war”.
+If it finds a phrase that is matching or close to matching (such as if there is a typo in the free-text contention), it adds the special issue or issues.
+For example, if the special issues service receives “p.t.s.d from gulf war” as a free-text contention, it may apply the “PTSD/1” special issue.
 
-Based on this text, we infer that the following special issue could potentially apply: “PTSD/1”
-
-Similarly to[ Flashes Service](https://www.notion.so/Flashes-Service-f05a4fbb5ab54e67849e966d989b6528), it does this by performing an [edit distance]([https://en.wikipedia.org/wiki/Edit_distance#:~:text=In computational linguistics and computer,one string into the other.)](https://en.wikipedia.org/wiki/Edit_distance#:~:text=In%20computational%20linguistics%20and%20computer,one%20string%20into%20the%20other.)) analysis between the contention and phrases known to be related to the flashes listed above. If it finds a phrase within a contention or a if it close enough to one of our known phrases (think typos) then it adds the respective special issue to it.
-
-At some point in the future we may also utilize a trained machine learning model to perform special issue classification.
+_Note_: At some point in the future we may also utilize a trained machine learning model to perform special issue classification.
