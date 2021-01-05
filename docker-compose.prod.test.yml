@@ -1,0 +1,61 @@
+# Meant to be used alongside the base `docker-compose.yml` file with a command like:
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+# See more here: https://docs.docker.com/compose/extends/#multiple-compose-files
+version: "3"
+
+services:
+  api:
+    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes:${VERSION}_test
+    build:
+      target: test
+    env_file:
+      - src/api_service/app/docker.env
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+
+  classifier:
+    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-classifier-service:${VERSION}_test
+    build:
+      target: test
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+
+  flashes:
+    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-flashes-service:${VERSION}_test
+    build:
+      target: test
+    ports:
+      - "8002:8002"
+    environment:
+      - PORT=8002
+
+  specialissues:
+    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-special-issues-service:${VERSION}_test
+    build:
+      target: test
+    ports:
+      - "8003:8003"
+    environment:
+      - PORT=8003
+
+  testing:
+    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-test:${VERSION}_test
+    build:
+      context: ./src/testing_service
+      dockerfile: $PWD/docker/Dockerfile
+      target: test
+    ports:
+      - "8004:8004"
+    environment:
+      - PORT=8004
+    env_file:
+      - src/testing_service/app/prod.env
+    depends_on:
+      - api
+      - classifier
+      - flashes
+      - specialissues
