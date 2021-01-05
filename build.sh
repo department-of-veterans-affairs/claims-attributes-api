@@ -7,6 +7,9 @@ BASE_APPLICATION_IMAGE=va-python-application-base
 echo "Copying cert file from ${SSL_CERT_FILE}..."
 cp $SSL_CERT_FILE ./docker/$BASE_APPLICATION_IMAGE
 
+echo "Running unit tests..."
+make docker-test
+
 # Build our base images - until this is centrally hosted, we build and reference locally in each constituent dockerfile
 echo "Building app with Docker-compose..."
 make docker-prod
