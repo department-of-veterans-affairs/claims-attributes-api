@@ -10,15 +10,23 @@ services:
       - "80:80"
     env_file:
       - src/api_service/app/docker.env
+    environment:
+      - PORT=8000
 
   classifier:
     image: classifier:${VERSION}_staging
+    environment:
+      - PORT=8001
 
   flashes:
     image: flashes:${VERSION}_staging
+    environment:
+      - PORT=8002
    
   specialissues:
     image: specialissues:${VERSION}_staging
+    environment:
+      - PORT=8003
 
   testing:
     image: testing:${VERSION}_staging
