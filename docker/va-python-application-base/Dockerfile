@@ -138,5 +138,12 @@ COPY app /app/app
 
 # Entrypoint will run the below command as part of its run
 WORKDIR /app
+
+# Add non-root user
+RUN useradd --create-home --home-dir /home/docker --shell /bin/bash docker
+RUN chown -R docker:docker /app
+# Switch to non-root user
+USER docker
+
 ENTRYPOINT /docker-entrypoint.sh $0 $@
 CMD ["/start.sh"]

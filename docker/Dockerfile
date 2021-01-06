@@ -27,3 +27,6 @@ FROM va-python-application-base:production as production
 # Copying our virtualenv
 COPY --from=builder-base $VENV_PATH $VENV_PATH
 COPY app /app/app
+
+# Switch to non-root user
+USER docker
