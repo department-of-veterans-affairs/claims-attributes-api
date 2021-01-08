@@ -44,7 +44,7 @@ doTest() {
 # Runs Smoke Tests
 doSmokeTest() {
   echo "Running Smoke tests..."
-  poetry run "test"
+  
   RETURN_STATUS=$?
   echo "Return status: $RETURN_STATUS"
   exit "$RETURN_STATUS"
@@ -53,7 +53,7 @@ doSmokeTest() {
 # Runs the Regression Test Suite
 doRegressionTest() {
   echo "Running Regression tests..."
-  poetry run "test"
+  poetry run pytest -sv --cov=app --cov-report=xml --junitxml=test.xml
   RETURN_STATUS=$?
   echo "Return status: $RETURN_STATUS"
   exit "$RETURN_STATUS"

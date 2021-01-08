@@ -24,7 +24,7 @@ $(CERT_FILE):
 local: cert local-build local-run
 
 local-build:
-	for project in api_service classifier_service flashes_service special_issues_service testing_service ; do \
+	for project in api_service classifier_service flashes_service special_issues_service ; do \
 		echo "Installing $$project ..."; cd ./src/$$project ; $(POETRY) install ; cd ../..; \
 	done
 
@@ -53,7 +53,6 @@ docker-dev: cert docker-base-images
 
 docker-test: cert docker-base-images
 	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.test.yml build
-	$(DOCKER) run -v /var/run/docker.sock:/var/run/docker.sock --rm --network host testing:test unit-test
 
 docker-staging: docker-base-images
 	export VERSION=$$(cat VERSION); $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.staging.yml up --build

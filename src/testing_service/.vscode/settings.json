@@ -1,7 +1,0 @@
-{
-    "python.pythonPath": "${workspaceFolder}/.venv/bin/python",
-    "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint",
-    "python.formatting.provider": "black",
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
-}
