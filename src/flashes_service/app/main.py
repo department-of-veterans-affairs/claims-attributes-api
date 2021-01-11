@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import List
+from typing import List, Set
 
 from fastapi import FastAPI
 from importlib_resources import files
@@ -16,7 +16,7 @@ class FlashesClassifier:
         flashes_path = Path(files("app.data").joinpath("flashes.json"))
         self.flashes_map = json.loads(flashes_path.read_text())
 
-    def check_keywords(self, claim_text: str):
+    def check_keywords(self, claim_text: str) -> Set[str]:
         flashes = set()
         if "hardship" in claim_text:
             flashes.add("Hardship")
@@ -46,7 +46,7 @@ class FlashesClassifier:
             flashes.add("Emergency Care")
         return flashes
 
-    def classify(self, text: str):
+    def classify(self, text: str) -> List[Flash]:
         cleaned_text = utils.clean_text(text)
         keyword_matches = self.check_keywords(cleaned_text)
         spelling_matches = utils.find_similar(cleaned_text, self.flashes_map)

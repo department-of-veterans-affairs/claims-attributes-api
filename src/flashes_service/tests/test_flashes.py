@@ -40,7 +40,7 @@ def test_flashes_endpoint(client, global_config):
         assert flash.text is not None
 
 
-def test_flashes_classifier_keywords(client, global_config):
+def test_flashes_classifier_keywords(client):
     classifier = FlashesClassifier()
     assert classifier.check_keywords("hardship") == {"Hardship"}
     assert classifier.check_keywords("seriously injured") == {
@@ -65,11 +65,11 @@ def test_flashes_classifier_keywords(client, global_config):
     assert classifier.check_keywords("emergency care") == {"Emergency Care"}
 
 
-def test_flashes_classifier_classify(client, global_config):
+def test_flashes_classifier_classify(client):
     classifier = FlashesClassifier()
     assert classifier.classify("ALS") == [Flash(text="Amyotrophic Lateral Sclerosis")]
 
 
-def test_flashes_classifier_nonexistent_classify(client, global_config):
+def test_flashes_classifier_nonexistent_classify(client):
     classifier = FlashesClassifier()
     assert classifier.classify("Does not exist") == []
