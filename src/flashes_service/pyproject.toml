@@ -20,6 +20,7 @@ pytest-cov = "^2.10.1"
 # See https://github.com/python-poetry/poetry/issues/668
 # caapi_shared = {path="../shared", develop=true}
 
+requests = "^2.25.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

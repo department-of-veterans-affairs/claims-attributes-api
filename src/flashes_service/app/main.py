@@ -17,43 +17,44 @@ class FlashesClassifier:
         self.flashes_map = json.loads(flashes_path.read_text())
 
     def check_keywords(self, claim_text: str):
-        flashes = []
+        flashes = set()
         if "hardship" in claim_text:
-            flashes.append("Hardship")
+            flashes.add("Hardship")
         if "seriously injured" in claim_text:
-            flashes.append("Seriously Injured/Very Seriously Injured")
+            flashes.add("Seriously Injured/Very Seriously Injured")
         if "terminally ill" in claim_text:
-            flashes.append("Terminally Ill")
+            flashes.add("Terminally Ill")
         if "homeless" in claim_text:
-            flashes.append("Homeless")
+            flashes.add("Homeless")
         if "purple heart" in claim_text:
-            flashes.append("Purple Heart")
+            flashes.add("Purple Heart")
         if (
             ("pow" in claim_text)
             or ("prisoner of war" in claim_text)
             or ("p o w" in claim_text)
         ):
-            flashes.append("POW")
+            flashes.add("POW")
         if "medal of honor" in claim_text:
-            flashes.append("Medal of Honor")
+            flashes.add("Medal of Honor")
         if (
             ("amyotrophic lateral sclerosis" in claim_text)
             or ("als" in claim_text)
             or ("a l s" in claim_text)
         ):
-            flashes.append("Amyotrophic Lateral Sclerosis")
+            flashes.add("Amyotrophic Lateral Sclerosis")
         if "emergency care" in claim_text:
-            flashes.append("Emergency Care")
+            flashes.add("Emergency Care")
         return flashes
 
     def classify(self, text: str):
         cleaned_text = utils.clean_text(text)
         keyword_matches = self.check_keywords(cleaned_text)
         spelling_matches = utils.find_similar(cleaned_text, self.flashes_map)
-        matches = keyword_matches + spelling_matches
+        matches = list(keyword_matches.union(set(spelling_matches)))
         match_results = []
         for match in matches:
-            match_results.append({"text": match})
+            if match:
+                match_results.append(Flash(text=match))
         return match_results
 
 
