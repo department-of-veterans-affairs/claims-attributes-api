@@ -22,3 +22,5 @@ services:
 
   testing:
     image: testing:${VERSION}_staging
+    env_file:
+      - src/api_service/tests/prod.env

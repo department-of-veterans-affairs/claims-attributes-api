@@ -52,7 +52,7 @@ docker-dev: cert docker-base-images
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 docker-test: cert docker-base-images
-	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.test.yml build
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.test.yml up --build
 
 docker-staging: docker-base-images
 	export VERSION=$$(cat VERSION); $(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.staging.yml up --build

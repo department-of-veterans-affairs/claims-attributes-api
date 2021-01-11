@@ -15,7 +15,7 @@ services:
     environment:
       - PORT=8000
     command:
-      - regression-test
+      - unit-test
 
   classifier:
     image: classifier:test
@@ -26,7 +26,7 @@ services:
     environment:
       - PORT=8001
     command:
-      - regression-test
+      - unit-test
 
   flashes:
     image: flashes:test
@@ -37,7 +37,7 @@ services:
     environment:
       - PORT=8002
     command:
-      - regression-test
+      - unit-test
 
   specialissues:
     image: specialissues:test
@@ -48,4 +48,4 @@ services:
     environment:
       - PORT=8003
     command:
-      - regression-test
+      - unit-test

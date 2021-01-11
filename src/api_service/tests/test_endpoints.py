@@ -86,7 +86,6 @@ def global_config():
         "predict_uri": "/benefits-claims-attributes/v1/",
     }
 
-
 def test_predict_working(client, global_config, requests_mock):
     if test_settings.use_mock:
         mock_responses(requests_mock)
