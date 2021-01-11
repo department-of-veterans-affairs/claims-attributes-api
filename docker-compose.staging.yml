@@ -24,3 +24,7 @@ services:
     image: testing:${VERSION}_staging
     env_file:
       - src/api_service/tests/prod.env
+    build:
+      context: ./src/api_service
+      dockerfile: $PWD/docker/Dockerfile
+      target: test

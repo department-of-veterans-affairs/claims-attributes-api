@@ -28,10 +28,3 @@ services:
     build:
       context: ./src/special_issues_service
       dockerfile: $PWD/docker/Dockerfile
-    
-  testing:
-    image: testing:latest
-    build:
-      context: ./src/api_service
-      dockerfile: $PWD/docker/Dockerfile
-      target: test
