@@ -44,7 +44,8 @@ def test_special_issues_endpoint(client, global_config):
 
     gw_ptsd = response.special_issues[1]
     assert len(gw_ptsd) == 2
-    assert gw_ptsd == [SpecialIssue(text="GW"), SpecialIssue(text="PTSD/1")]
+    assert SpecialIssue(text="GW") gw_ptsd
+    assert SpecialIssue(text="PTSD/1") in gw_ptsd
 
 
 def test_special_issues_classifier_classify(client):
