@@ -44,7 +44,7 @@ def test_special_issues_endpoint(client, global_config):
 
     gw_ptsd = response.special_issues[1]
     assert len(gw_ptsd) == 2
-    assert SpecialIssue(text="GW") gw_ptsd
+    assert SpecialIssue(text="GW") in gw_ptsd
     assert SpecialIssue(text="PTSD/1") in gw_ptsd
 
 
