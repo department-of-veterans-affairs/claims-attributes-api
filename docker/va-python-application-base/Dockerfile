@@ -30,10 +30,13 @@ ENV PYTHONUNBUFFERED=1 \
 # prepend poetry and venv to path
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
+# Add non-root user
+RUN useradd --create-home --home-dir /home/docker --shell /bin/bash docker
+
 # We need to install curl on top of the slim image
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
-    curl 
+    curl
 
 ###############################################
 # Certificates
@@ -135,8 +138,13 @@ RUN chmod +x /docker-entrypoint.sh
 # By default we copy just the fake app. 
 # Your app will need to copy its own files, e.g. COPY api /app/api
 COPY app /app/app
+RUN chown -R docker:docker /app
 
 # Entrypoint will run the below command as part of its run
 WORKDIR /app
+
+# Switch to non-root user
+USER docker
+
 ENTRYPOINT /docker-entrypoint.sh $0 $@
 CMD ["/start.sh"]
