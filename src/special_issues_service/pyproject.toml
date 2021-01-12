@@ -10,7 +10,7 @@ fastapi = "^0.62.0"
 pydantic = "^1.7.3"
 uvicorn = {extras = ["standard"], version = "^0.13.1"}
 importlib-resources = "^3.3.0"
-caapi_shared = "^1.0.0"
+caapi_shared = "^1.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
