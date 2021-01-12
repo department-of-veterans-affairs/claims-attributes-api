@@ -7,11 +7,9 @@ services:
   api:
     image: api:${VERSION}_staging
     ports:
-      - "80:8000"
+      - "80:80"
     env_file:
       - src/api_service/app/docker_staging.env
-    environment:
-      - PORT=8000
 
   classifier:
     image: classifier:${VERSION}_staging
