@@ -91,7 +91,7 @@ class FlashesServiceOutput(BaseModel):
     Represents the output of a call to the Flashes Service
     """
 
-    flashes: List[List[SpecialIssue]] = Field(
+    flashes: List[List[Flash]] = Field(
         None,
         description="""A list of flashes that may apply based on the disabilities claimed""",
     )

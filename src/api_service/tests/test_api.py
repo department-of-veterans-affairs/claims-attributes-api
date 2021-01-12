@@ -10,20 +10,33 @@ from caapi_shared.schemas import (
     SpecialIssueServiceOutput,
     SpecialIssue,
 )
-from app.settings import settings
+from app.settings import settings as app_settings
+from tests.settings import settings as test_settings
 import pytest
+import collections
 
-client = TestClient(app)
+
+@pytest.fixture
+def client():
+    from urllib.parse import urlunsplit
+
+    location = (
+        f"{test_settings.deployment_test_host}:{test_settings.deployment_test_port}"
+    )
+    base_url = urlunsplit(
+        (test_settings.deployment_test_protocol, location, "", "", "")
+    )
+    return TestClient(base_url=base_url, app=app)
 
 
-def test_docs():
+def test_docs(client):
     response = client.get("/benefits-claims-attributes/v1/docs/openapi.json")
     assert response.status_code == 200
     output = response.json()
     assert output["info"]["title"] == "Claims Attributes API"
 
 
-def test_healthcheck():
+def test_healthcheck(client):
     response = client.get("/benefits-claims-attributes/v1/healthcheck")
     assert response.status_code == 200
     assert response.json() == "App OK"
@@ -39,12 +52,12 @@ def mock_responses(requests_mock):
             Classification(text="skin", confidence=96, code="9016"),
         ]
     ).dict()
-    requests_mock.post(settings.classifier_uri, json=classifier_output)
+    requests_mock.post(app_settings.classifier_uri, json=classifier_output)
 
     flashes_output = FlashesServiceOutput(
         flashes=[[], [], [], [], [Flash(text="Homeless")]]
     ).dict()
-    requests_mock.post(settings.flashes_uri, json=flashes_output)
+    requests_mock.post(app_settings.flashes_uri, json=flashes_output)
 
     special_issues_output = SpecialIssueServiceOutput(
         special_issues=[
@@ -55,22 +68,11 @@ def mock_responses(requests_mock):
             [],
         ]
     ).dict()
-    requests_mock.post(settings.special_issues_uri, json=special_issues_output)
+    requests_mock.post(app_settings.special_issues_uri, json=special_issues_output)
 
 
-def get_predict_input_json():
-    return {
-        "claim_text": [
-            "Ringing in my ear",
-            "cancer due to agent orange",
-            "p.t.s.d from gulf war",
-            "recurring nightmares",
-            "skin condition because of homelessness",
-        ]
-    }
-
-
-def get_global_config():
+@pytest.fixture
+def global_config():
     return {
         "input_json": {
             "claim_text": [
@@ -84,10 +86,9 @@ def get_global_config():
         "predict_uri": "/benefits-claims-attributes/v1/",
     }
 
-
-def test_predict_working(requests_mock):
-    global_config = get_global_config()
-    mock_responses(requests_mock)
+def test_predict_working(client, global_config, requests_mock):
+    if test_settings.use_mock:
+        mock_responses(requests_mock)
 
     # Use the actual POST for this endpoint
     requests_mock.real_http = True
@@ -100,14 +101,13 @@ def test_predict_working(requests_mock):
     assert len(response.contentions) == 5
 
 
-def test_predict_broken_services(requests_mock):
-    global_config = get_global_config()
+def test_predict_broken_services(client, global_config, requests_mock):
     for uri in [
-        settings.classifier_uri,
-        settings.flashes_uri,
-        settings.special_issues_uri,
+        app_settings.classifier_uri,
+        app_settings.flashes_uri,
+        app_settings.special_issues_uri,
     ]:
         requests_mock.post(uri, status_code=500)
-        with pytest.raises(requests.exceptions.HTTPError) as exc_info:
+        with pytest.raises(requests.exceptions.HTTPError):
             requests_mock.real_http = True
             client.post(global_config["predict_uri"], json=global_config["input_json"])

@@ -19,3 +19,12 @@ services:
    
   specialissues:
     image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-special-issues-service:${VERSION}
+
+  testing:
+    image: 533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes-test:${VERSION}
+    env_file:
+      - src/api_service/tests/prod.env
+    build:
+      context: ./src/api_service
+      dockerfile: $PWD/docker/Dockerfile
+      target: test

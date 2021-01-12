@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "caapi-shared"
-version = "1.0.0"
+version = "1.0.4"
 description = "Shared library for all services that are part of the VA-administered Claims Attributes API"
 authors = ["Nat Hillard <nathaniel.hillard@va.gov>"]
 
@@ -10,7 +10,6 @@ pydantic = "^1.7.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
-
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

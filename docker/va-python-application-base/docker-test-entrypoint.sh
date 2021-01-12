@@ -12,8 +12,9 @@ cat <<EOF
 Commands
   list-tests
   test [--trust <host>] [-Dkey=value] <name> [name] [...]
-  smoke-test
+  unit-test
   regression-test
+  smoke-test
 $1
 EOF
 exit 1
@@ -41,10 +42,9 @@ doTest() {
   [ $? != 0 ] && exit 1
 }
 
-# Runs Smoke Tests
-doSmokeTest() {
-  echo "Running Smoke tests..."
-  poetry run "test"
+doUnitTest() {
+  echo "Running Unit tests..."
+  poetry run pytest -sv --cov=app --cov-report=xml --junitxml=test.xml
   RETURN_STATUS=$?
   echo "Return status: $RETURN_STATUS"
   exit "$RETURN_STATUS"
@@ -53,7 +53,16 @@ doSmokeTest() {
 # Runs the Regression Test Suite
 doRegressionTest() {
   echo "Running Regression tests..."
-  poetry run "test"
+  poetry run pytest -sv
+  RETURN_STATUS=$?
+  echo "Return status: $RETURN_STATUS"
+  exit "$RETURN_STATUS"
+}
+
+# Runs Smoke Tests
+doSmokeTest() {
+  echo "Running Smoke tests..."
+  poetry run pytest -sv -m smoke
   RETURN_STATUS=$?
   echo "Return status: $RETURN_STATUS"
   exit "$RETURN_STATUS"
@@ -67,6 +76,7 @@ case "$COMMAND" in
   lt|list-tests) doListTests;;
   t|test) doTest "$@";;
   s|smoke-test) doSmokeTest;;
+  u|unit-test) doUnitTest;;
   r|regression-test) doRegressionTest;;
   *) usage "Unknown command: $COMMAND";;
 esac

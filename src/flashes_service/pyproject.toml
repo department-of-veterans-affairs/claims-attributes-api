@@ -10,20 +10,17 @@ fastapi = "^0.62.0"
 pydantic = "^1.7.3"
 uvicorn = {extras = ["standard"], version = "^0.13.1"}
 importlib-resources = "^3.3.0"
-caapi-shared = "^1.0.0"
+caapi-shared = "^1.0.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"
 black = {version = "^20.8b1", allow-prereleases = true}
+pytest-cov = "^2.10.1"
 # Commented out - uncomment for local development of shared library
 # See https://github.com/python-poetry/poetry/issues/668
 # caapi_shared = {path="../shared", develop=true}
 
-pytest-cov = "^2.10.1"
-[tool.poetry.scripts]
-test = 'scripts:test'
-server = 'scripts:server'
-
+requests = "^2.25.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

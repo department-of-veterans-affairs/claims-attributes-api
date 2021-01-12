@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import List
+from typing import List, Set
 
 from fastapi import FastAPI
 from importlib_resources import files
@@ -16,7 +16,7 @@ class SpecialIssuesClassifier:
         special_issues_path = Path(files("app.data").joinpath("special_issues.json"))
         self.si_map = json.loads(special_issues_path.read_text())
 
-    def check_list(self, claim_text: str):
+    def check_keywords(self, claim_text: str) -> Set[str]:
         identified_issues = set()
         for issue in self.si_map.keys():
             if issue in claim_text:
@@ -27,17 +27,17 @@ class SpecialIssuesClassifier:
         if ("PTSD/1" in identified_issues) and ("non combat" in claim_text):
             identified_issues.add("PTSD/2")
             identified_issues.remove("PTSD/1")
-        return list(identified_issues)
+        return identified_issues
 
-    def classify(self, text: str):
+    def classify(self, text: str) -> List[SpecialIssue]:
         cleaned_text = utils.clean_text(text)
-        list_matches = self.check_list(cleaned_text)
+        list_matches = self.check_keywords(cleaned_text)
         spelling_matches = utils.find_similar(cleaned_text, self.si_map)
-        matches = list_matches + spelling_matches
+        matches = list(list_matches.union(set(spelling_matches)))
         match_results = []
         for match in matches:
-            special_issue = SpecialIssue(text=match)
-            match_results.append(special_issue)
+            if match:
+                match_results.append(SpecialIssue(text=match))
         return match_results
 
 

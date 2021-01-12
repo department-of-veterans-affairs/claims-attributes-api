@@ -1,5 +1,6 @@
 {
     "python.pythonPath": "${workspaceFolder}/.venv/bin/python",
     "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint",
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.testing.pytestEnabled": true
 }

@@ -14,6 +14,8 @@ services:
       - "8000:8000"
     environment:
       - PORT=8000
+    command:
+      - unit-test
 
   classifier:
     image: classifier:test
@@ -23,6 +25,8 @@ services:
       - "8001:8001"
     environment:
       - PORT=8001
+    command:
+      - unit-test
 
   flashes:
     image: flashes:test
@@ -32,6 +36,8 @@ services:
       - "8002:8002"
     environment:
       - PORT=8002
+    command:
+      - unit-test
 
   specialissues:
     image: specialissues:test
@@ -41,19 +47,5 @@ services:
       - "8003:8003"
     environment:
       - PORT=8003
-
-  testing:
-    image: testing:test
-    build:
-      context: ./src/testing_service
-      dockerfile: $PWD/docker/Dockerfile
-      target: test
-    ports:
-      - "8004:8004"
-    environment:
-      - PORT=8004
-    depends_on:
-      - api
-      - classifier
-      - flashes
-      - specialissues
+    command:
+      - unit-test
