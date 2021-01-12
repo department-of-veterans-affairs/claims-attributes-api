@@ -7,9 +7,9 @@ services:
   api:
     image: api:${VERSION}_staging
     ports:
-      - "80:80"
+      - "80:8000"
     env_file:
-      - src/api_service/app/docker.env
+      - src/api_service/app/docker_staging.env
     environment:
       - PORT=8000
 
