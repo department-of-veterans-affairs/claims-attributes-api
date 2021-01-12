@@ -13,7 +13,7 @@ uvicorn = {extras = ["standard"], version = "^0.13.1"}
 importlib-resources = "^3.3.0"
 scipy = "^1.5.4"
 pydantic = "^1.7.3"
-caapi_shared = "^1.0.3"
+caapi-shared = "^1.0.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.0"

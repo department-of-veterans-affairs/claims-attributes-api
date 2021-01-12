@@ -45,7 +45,7 @@ local-run-special-issues:
 
 local-test: local-build
 	for project in api_service classifier_service flashes_service special_issues_service ; do \
-		echo "Testing $$project ..."; cd ./src/$$project ; $(POETRY) run pytest -sv --cov=app --cov-report=xml --junitxml=test.xml  ; cd ../..; \
+		echo "Testing $$project ..."; cd ./src/$$project ; $(POETRY) run pytest -sv --cov=app --junitxml=test.xml --cov-report term-missing  ; cd ../..; \
 	done
 
 docker-dev: cert docker-base-images

@@ -34,9 +34,9 @@ def test_flashes_endpoint(client, global_config):
     assert isinstance(response, FlashesServiceOutput)
     assert len(response.flashes) == 2
     for flash_list in response.flashes:
-        assert isinstance(response, Flash)
         assert len(flash_list) == 1
         flash = flash_list[0]
+        assert isinstance(flash, Flash)
         assert flash.text is not None
 
 
