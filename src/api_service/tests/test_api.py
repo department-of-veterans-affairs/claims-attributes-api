@@ -28,20 +28,6 @@ def client():
     )
     return TestClient(base_url=base_url, app=app)
 
-
-def test_docs(client):
-    response = client.get("/benefits-claims-attributes/v1/docs/openapi.json")
-    assert response.status_code == 200
-    output = response.json()
-    assert output["info"]["title"] == "Claims Attributes API"
-
-
-def test_healthcheck(client):
-    response = client.get("/benefits-claims-attributes/v1/healthcheck")
-    assert response.status_code == 200
-    assert response.json() == "App OK"
-
-
 def mock_responses(requests_mock):
     classifier_output = ClassifierServiceOutput(
         classifications=[
@@ -70,6 +56,17 @@ def mock_responses(requests_mock):
     ).dict()
     requests_mock.post(app_settings.special_issues_uri, json=special_issues_output)
 
+@pytest.mark.smoke
+def test_healthcheck(client):
+    response = client.get("/benefits-claims-attributes/v1/healthcheck")
+    assert response.status_code == 200
+    assert response.json() == "App OK"
+
+def test_docs(client):
+    response = client.get("/benefits-claims-attributes/v1/docs/openapi.json")
+    assert response.status_code == 200
+    output = response.json()
+    assert output["info"]["title"] == "Claims Attributes API"
 
 @pytest.fixture
 def global_config():
