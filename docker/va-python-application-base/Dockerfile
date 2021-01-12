@@ -36,7 +36,11 @@ RUN useradd --create-home --home-dir /home/docker --shell /bin/bash docker
 # We need to install curl on top of the slim image
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
-    curl
+    curl \
+    authbind && \
+    touch /etc/authbind/byport/80 && \
+    chmod 500 /etc/authbind/byport/80 && \
+    chown docker /etc/authbind/byport/80
 
 ###############################################
 # Certificates
