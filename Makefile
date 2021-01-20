@@ -2,6 +2,9 @@
 POETRY:=$$(which poetry || echo "install poetry. see https://python-poetry.org/")
 DOCKER:=$$(which docker || echo "install docker. see https://docs.docker.com/get-docker/")
 DOCKER_COMPOSE:=$$(which docker-compose || echo "install docker-compose. see https://docs.docker.com/compose/install/")
+PYTHON:=$$(which python)
+SERVICES:= api_service classifier_service flashes_service special_issues_service
+
 
 # Note this will change value over time, as it is defined with "=" instead of ":="
 ECS_IMAGES=$$(docker images --filter=reference="533575416491.dkr.ecr.us-gov-west-1.amazonaws.com/benefits-apis-claims-attributes*:*" --format "{{.Repository}}:{{.Tag}}")
@@ -24,8 +27,8 @@ $(CERT_FILE):
 local: cert local-build local-run
 
 local-build:
-	for project in api_service classifier_service flashes_service special_issues_service ; do \
-		echo "Installing $$project ..."; cd ./src/$$project ; $(POETRY) install ; cd ../..; \
+	@for service in $(SERVICES) ; do \
+		echo "Installing $$service ..."; cd ./src/$$service ; $(POETRY) install ; cd ../..; \
 	done
 
 # Tip: run this with `make -j4 local-run` to run all services concurrently
@@ -44,8 +47,8 @@ local-run-special-issues:
 	cd ./src/special_issues_service ; $(POETRY) run uvicorn app.main:app --reload --port 8003
 
 local-test: local-build
-	for project in api_service classifier_service flashes_service special_issues_service ; do \
-		echo "Testing $$project ..."; cd ./src/$$project ; $(POETRY) run pytest -sv --cov=app --junitxml=test.xml --cov-report term-missing  ; cd ../..; \
+	@for service in $(SERVICES) ; do \
+		echo "Testing $$service ..."; cd ./src/$$service ; $(POETRY) run pytest -sv --cov=app --junitxml=test.xml --cov-report term-missing  ; cd ../..; \
 	done
 
 docker-dev: cert docker-base-images
@@ -83,6 +86,17 @@ docker-push:
 	else \
 		echo "ECS_IMAGES Empty"; \
 	fi;
+
+security-scan:
+	@echo "Creating master dependency list..."
+	$(PYTHON) -m venv .venv
+	@for service in $(SERVICES) ; do \
+		cd ./src/$$service ; poetry export >> ../../requirements.txt ; cd ../..; \
+	done ; \
+	. .venv/bin/activate ; \
+	pip install -r requirements.txt ; \
+	sh Fortifyclaims-attributes-api.sh
+
 
 clean:
 	$(DOCKER) rm -f api_dev api_prod || true

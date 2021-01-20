@@ -7,3 +7,6 @@ cacert.pem
 *xml
 .coverage
 Fortifyclaims*
+!Fortifyclaims-attributes-api.sh
+requirements.txt
+.venv
