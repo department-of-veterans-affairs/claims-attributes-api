@@ -11,4 +11,4 @@ Fortifyclaims*
 requirements.txt
 .venv
 translation*.log
-
+scan*.log

@@ -23,9 +23,10 @@ This is all done for you in the `security-scan` Makefile target:
 
 The script has been doctored in the following ways from the standard Scan Wizard output:
 
-1. `DEBUG` has been set to `true`
-2. The `-logfile` argument has been added to both the `translate` and `scan` phases
-3. Additional arguments have been added to the "comments" at the bottom of the file. Note! These "comments" are not actually comments in that they are parsed by the script itself and added when it is run. Here are the changes:
+1. Project root has been updated to remove personal references, and dynamically generate python path
+2. `DEBUG` has been set to `true`
+3. The `-logfile` argument has been added to both the `translate` and `scan` phases
+4. Additional arguments have been added to the "comments" at the bottom of the file. Note! These "comments" are not actually comments in that they are parsed by the script itself and added when it is run. Here are the changes:
    1. The system-standard and virtual environment paths have been added as `-python-path` args
    2. The test directories have been added as `-exclude` args
    3. The virtualenv directory has been added as an `-exclude` arg

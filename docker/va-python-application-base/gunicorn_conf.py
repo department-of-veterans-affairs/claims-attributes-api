@@ -36,6 +36,7 @@ graceful_timeout_str = os.getenv("GRACEFUL_TIMEOUT", "120")
 timeout_str = os.getenv("TIMEOUT", "120")
 keepalive_str = os.getenv("KEEP_ALIVE", "5")
 
+'''
 # Gunicorn config variables
 loglevel = use_loglevel
 workers = web_concurrency
@@ -65,3 +66,4 @@ log_data = {
     "port": port,
 }
 print(json.dumps(log_data))
+'''
