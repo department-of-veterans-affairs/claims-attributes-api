@@ -10,3 +10,5 @@ Fortifyclaims*
 !Fortifyclaims-attributes-api.sh
 requirements.txt
 .venv
+translation*.log
+

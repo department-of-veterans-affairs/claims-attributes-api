@@ -19,7 +19,7 @@
 # FILENOMAXDIFF - this is the percentage of difference between the number of files which will trigger a warning by the script
 # ###########################################################################
 
-DEBUG=false
+DEBUG=true
 SOURCEANALYZER=sourceanalyzer
 FPR="Fortifyclaims-attributes-api.fpr"
 BUILDID="claims-attributes-api"
@@ -65,7 +65,7 @@ exit
 fi
 # ###########################################################################
 echo Translating files
-$SOURCEANALYZER $MEMORY $LAUNCHERSWITCHES -b $BUILDID @$ARGFILE
+$SOURCEANALYZER $MEMORY $LAUNCHERSWITCHES -b $BUILDID -logfile translation.log @$ARGFILE
 if [ $? -ne 0 ] ; then
 echo sourceanalyzer failed, exiting
 exit
@@ -73,7 +73,7 @@ fi
 # ###########################################################################
 if [ $ENABLE_BYTECODE = true ]; then
 echo Translating Java bytecode files
-$SOURCEANALYZER $MEMORY $LAUNCHERSWITCHES -b $BUILDID @$BYTECODE_ARGFILE
+$SOURCEANALYZER $MEMORY $LAUNCHERSWITCHES -b $BUILDID -logfile scan.log @$BYTECODE_ARGFILE
 if [ $? -ne 0 ] ; then
 echo sourceanalyzer failed, exiting
 exit
@@ -114,15 +114,14 @@ exit
 fi
 ###########################################################################
 echo Finished
-# ARGS "-python-path"
-# ARGS ".venv/lib/python3.8/site-packages"
-# ARGS "-python-path"
-# ARGS "$PWD/.venv/lib/python3.8/"
+# ARGS "-python-path" 
+# ARGS ".:/Users/nhillard/.pyenv/versions/3.8.6/lib/python38.zip:/Users/nhillard/.pyenv/versions/3.8.6/lib/python3.8:/Users/nhillard/.pyenv/versions/3.8.6/lib/python3.8/lib-dynload:/Users/nhillard/Documents/Code/USDS/VA/claims-attributes-api/.venv/lib/python3.8/site-packages"
 # ARGS "-exclude"
 # ARGS "tests/**"
 # ARGS "-exclude"
 # ARGS "src/**/tests/*"
 # ARGS "-exclude"
 # ARGS ".venv"
+# ARGS "-verbose"
 # ARGS "PROJECTROOT0_MARKER"
 
