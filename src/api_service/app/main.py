@@ -5,7 +5,7 @@ from pathlib import Path
 from importlib_resources import files
 
 # All API calls have this prefix in order to avoid Load Balancer conflicts
-api_prefix = "benefits-claims-attributes"
+api_prefix = "services/claims-attributes"
 version = "v1"
 
 app = FastAPI(
