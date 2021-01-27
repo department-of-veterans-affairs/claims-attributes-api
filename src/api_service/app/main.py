@@ -13,13 +13,17 @@ app = FastAPI(
     openapi_url=f"/{api_prefix}/{version}/docs/openapi.json",
 )
 
-
 def custom_openapi():
+    documented_routes = []
+    for route in app.routes:
+        if 'healthcheck' not in route.path:
+          documented_routes.append(route)
+
     openapi_schema = get_openapi(
         title="Claims Attributes API",
         version="1.0.0",
         description=Path(files("app.data").joinpath("summary.md")).read_text(),
-        routes=[app.routes[0], app.routes[1], app.routes[2], app.routes[3], app.routes[5]]
+        routes=documented_routes
     )
     app.openapi_schema = openapi_schema
     return app.openapi_schema
