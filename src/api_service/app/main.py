@@ -19,7 +19,7 @@ def custom_openapi():
         title="Claims Attributes API",
         version="1.0.0",
         description=Path(files("app.data").joinpath("summary.md")).read_text(),
-        routes=app.routes,
+        routes=[app.routes[0], app.routes[1], app.routes[2], app.routes[3], app.routes[5]]
     )
     app.openapi_schema = openapi_schema
     return app.openapi_schema
