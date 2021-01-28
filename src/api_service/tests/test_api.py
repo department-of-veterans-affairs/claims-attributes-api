@@ -58,12 +58,12 @@ def mock_responses(requests_mock):
 
 @pytest.mark.smoke
 def test_healthcheck(client):
-    response = client.get("/benefits-claims-attributes/v1/healthcheck")
+    response = client.get("/services/claims-attributes/v1/healthcheck")
     assert response.status_code == 200
     assert response.json() == "App OK"
 
 def test_docs(client):
-    response = client.get("/benefits-claims-attributes/v1/docs/openapi.json")
+    response = client.get("/services/claims-attributes/v1/docs/openapi.json")
     assert response.status_code == 200
     output = response.json()
     assert output["info"]["title"] == "Claims Attributes API"
@@ -80,7 +80,7 @@ def global_config():
                 "skin condition because of homelessness",
             ]
         },
-        "predict_uri": "/benefits-claims-attributes/v1/",
+        "predict_uri": "/services/claims-attributes/v1/",
     }
 
 def test_predict_working(client, global_config, requests_mock):
