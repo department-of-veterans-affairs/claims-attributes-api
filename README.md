@@ -50,9 +50,16 @@ When you work with these files going forward they will appear to be their binary
    poetry install
    ```
 
+1.  Install certifi module, if not already installed
+
+   ```sh
+   pip install certifi
+   ```
+
+
 #### Run
 
-Run `make local` to run the app locally.
+Run `make -j4 local` to run the app locally. Since this project is built in microservices, the `-j4` flag is required to run all services concurrently.
 
 This installs a necessary certificate file, then uses a function in `scripts.py` defined in `pyproject.toml`. Under the hood, FastAPI uses the gunicorn ASGI server to serve content.
 
