@@ -12,6 +12,13 @@ class ClaimInput(BaseModel):
         description="""
         An array of strings representing claimed disabilities. These will be classified on a per-disability basis in the output.
         """,
+        example= [
+            "Ringing in my ear",
+            "cancer due to agent orange",
+            "p.t.s.d from gulf war",
+            "recurring nightmares",
+            "skin condition because of homelessness",
+        ]
     )
 
 

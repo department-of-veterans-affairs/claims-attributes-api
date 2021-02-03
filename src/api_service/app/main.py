@@ -8,9 +8,17 @@ from importlib_resources import files
 api_prefix = "benefits-claims-attributes"
 version = "v1"
 
+tags_metadata = [
+    {
+        "name": "Claims Attributes",
+        "description": "Predict attributes for a claim"
+    }
+]
+
 app = FastAPI(
     docs_url=f"/{api_prefix}/{version}/docs",
     openapi_url=f"/{api_prefix}/{version}/docs/openapi.json",
+    openapi_tags=tags_metadata
 )
 
 def custom_openapi():

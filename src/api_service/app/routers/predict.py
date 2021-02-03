@@ -61,7 +61,7 @@ class Predictor:
         return parsed_data
 
 
-@router.post("/", response_model=Prediction)
+@router.post("/", response_model=Prediction, tags=["Claims Attributes"])
 async def get_prediction(claim_input: ClaimInput):
     """
     This takes an array of user's claimed disabilities (`claims_text`) and
