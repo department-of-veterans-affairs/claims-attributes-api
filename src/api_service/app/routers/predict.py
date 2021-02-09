@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Security
 from typing import List
 from pydantic import BaseModel
 import requests
@@ -59,7 +59,6 @@ class Predictor:
             raise
         parsed_data = model.parse_obj(response.json())
         return parsed_data
-
 
 @router.post("/", response_model=Prediction, tags=["Claims Attributes"])
 async def get_prediction(claim_input: ClaimInput):

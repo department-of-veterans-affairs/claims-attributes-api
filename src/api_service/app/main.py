@@ -36,7 +36,6 @@ def custom_openapi():
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
-
 global_router = APIRouter()
 global_router.include_router(healthcheck.router)
 global_router.include_router(predict.router)
